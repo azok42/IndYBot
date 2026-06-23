@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azok42.IndYLib" Version="1.0.0" />
+    <PackageReference Include="Discord.Net" Version="3.20.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
   </ItemGroup>
 
