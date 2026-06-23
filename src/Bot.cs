@@ -20,6 +20,7 @@ class Bot
          .AddSingleton(socketConfig)
          .AddSingleton<DiscordSocketClient>()
          .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
+         .AddSingleton<InteractionHandler>()
          .BuildServiceProvider();
 
       var client = services.GetRequiredService<DiscordSocketClient>();
@@ -28,17 +29,11 @@ class Bot
       client.Log += LogAsync;
       interactionService.Log += LogAsync;
 
+      await services.GetRequiredService<InteractionHandler>().InitAsync();
+
       string token = File.ReadAllText("bot-info/token").Trim();
       await client.LoginAsync(TokenType.Bot, token);
       await client.StartAsync();
-
-      await Task.Delay(9999);
-
-      var channel = client.GetChannel(1493851566854115400) as IMessageChannel;
-      if (channel != null)
-      {
-         await channel.SendMessageAsync("Test");
-      }
 
       await Task.Delay(-1);
    }
