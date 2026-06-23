@@ -10,4 +10,4 @@ IndY is a project in my school, where students can freely decide what, where and
 
 Better question: Why **NOT**?
 
-With the current system there isn't a way to automatically make entries. I want to provide such a feature. But is only an example.
+With the current system there isn't a way to automatically make entries. I want to provide such a feature. But this is only an example.
