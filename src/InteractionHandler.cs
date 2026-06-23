@@ -21,6 +21,7 @@ public class InteractionHandler
    public async Task InitAsync()
    {
       _client.Ready += ReadyAsync;
+      _client.InteractionCreated += HandleInteractionAsync;
    }
 
    private async Task ReadyAsync()
@@ -36,5 +37,23 @@ public class InteractionHandler
       var channel = _client.GetChannel(tmpChannelID) as IMessageChannel;
       if (channel != null)
          await channel.SendMessageAsync("online!");
+   }
+
+   private async Task HandleInteractionAsync(SocketInteraction interaction)
+   {
+      try
+      {
+         var ctx = new SocketInteractionContext(_client, interaction);
+         await _handler.ExecuteCommandAsync(ctx, _services);
+      }
+      catch (Exception e)
+      {
+         Console.WriteLine($"Error while processing interaction: {e}");
+
+         if (interaction.Type == InteractionType.ApplicationCommand && !interaction.HasResponded)
+         {
+            await interaction.RespondAsync($"Error while processing interaction: {e.GetBaseException()}");
+         }
+      }
    }
 }
