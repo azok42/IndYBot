@@ -25,6 +25,9 @@ class Bot
       var client = services.GetRequiredService<DiscordSocketClient>();
       var interactionService = services.GetRequiredService<InteractionService>();
 
+      client.Log += LogAsync;
+      interactionService.Log += LogAsync;
+
       string token = File.ReadAllText("bot-info/token").Trim();
       await client.LoginAsync(TokenType.Bot, token);
       await client.StartAsync();
@@ -38,5 +41,11 @@ class Bot
       }
 
       await Task.Delay(-1);
+   }
+
+   private Task LogAsync(LogMessage log)
+   {
+      Console.WriteLine(log.ToString());
+      return Task.CompletedTask;
    }
 }
