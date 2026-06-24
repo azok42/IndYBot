@@ -22,6 +22,8 @@ public class InteractionHandler
    {
       _client.Ready += ReadyAsync;
       _client.InteractionCreated += HandleInteractionAsync;
+
+      _handler.InteractionExecuted += HandleInteractionExecutedAsync;
    }
 
    private async Task ReadyAsync()
@@ -54,6 +56,27 @@ public class InteractionHandler
          {
             await interaction.RespondAsync($"Error while processing interaction: {e.GetBaseException()}");
          }
+      }
+   }
+
+   private async Task HandleInteractionExecutedAsync(ICommandInfo command, IInteractionContext ctx, IResult result)
+   {
+      if (result.IsSuccess)
+         return;
+
+      switch (result.Error)
+      {
+         case InteractionCommandError.UnmetPrecondition:
+            await ctx.Interaction.RespondAsync("Not enough permissions!", ephemeral: true);
+            break;
+
+         case InteractionCommandError.UnknownCommand:
+            await ctx.Interaction.RespondAsync("Unkown command", ephemeral: true);
+            break;
+
+         default:
+            await ctx.Interaction.RespondAsync($"Command failed: {result.ErrorReason}", ephemeral: true);
+            break;
       }
    }
 }
