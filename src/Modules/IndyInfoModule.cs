@@ -36,8 +36,6 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
          firstMsg = $"# Special Indy for {teacherId}:\n";
       }
 
-      Console.WriteLine(specialIndys.Count);
-
       await RespondAsync("Getting all special indys...", ephemeral: true);
 
       await MessageHelper.SendListMessageAsync(
