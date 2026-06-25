@@ -16,7 +16,7 @@ public class TeacherAutoCompleteHandler : AutocompleteHandler
 
       try
       {
-          var specialIndys = await IndyClient.GetSpecialIndyAsync();
+          var specialIndys = await IndyClient.GetIndyHoursAsync();
           List<string> teacherIDs = specialIndys.Select(teachers => teachers.TeacherId).ToList();
 
           var suggestion = teacherIDs
