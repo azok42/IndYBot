@@ -4,7 +4,7 @@ using IndYLib.Services;
 
 namespace IndYBot.Modules.AutocompleteHandlers;
 
-public class TeacherAutoCompleteHandler : AutocompleteHandler
+public class TeacherAutocompleteHandler : AutocompleteHandler
 {
    public override async Task<AutocompletionResult> GenerateSuggestionsAsync(
          IInteractionContext context,
