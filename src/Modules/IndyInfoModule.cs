@@ -4,6 +4,7 @@ using IndYBot.Helpers;
 
 namespace IndYBot.Modules;
 
+[Group("get", "Getters")]
 public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
 {
    [SlashCommand("subjects", "Get a list of all valid subjects!")]
