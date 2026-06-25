@@ -11,9 +11,9 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
    [SlashCommand("subjects", "Get a list of all valid subjects!")]
    public async Task SubjectsCommand()
    {
-      var subjects = await IndyClient.GetActiveSubjectsAsync();
-
       await RespondAsync("Getting all subjects...", ephemeral: true);
+
+      var subjects = await IndyClient.GetActiveSubjectsAsync();
 
       await MessageHelper.SendListMessageAsync(
             subjects,
@@ -27,6 +27,8 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
          [Summary("teacher-id", "Only show special indys from teacher")]
          [Autocomplete(typeof(TeacherAutoCompleteHandler))] string teacherId = "")
    {
+      await RespondAsync("Getting all special indys...", ephemeral: true);
+
       var specialIndys = await IndyClient.GetSpecialIndyAsync();
 
       string firstMsg = "# Special Indys:\n";
@@ -35,8 +37,6 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
          specialIndys = specialIndys.Where(x => x.TeacherId.Contains(teacherId, StringComparison.OrdinalIgnoreCase)).ToList();
          firstMsg = $"# Special Indy for {teacherId}:\n";
       }
-
-      await RespondAsync("Getting all special indys...", ephemeral: true);
 
       await MessageHelper.SendListMessageAsync(
             specialIndys,
