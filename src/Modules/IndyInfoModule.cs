@@ -29,8 +29,12 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
    {
       var specialIndys = await IndyClient.GetSpecialIndyAsync();
 
+      string firstMsg = "# Special Indys:\n";
       if (!string.IsNullOrWhiteSpace(teacherId))
+      {
          specialIndys = specialIndys.Where(x => x.TeacherId.Contains(teacherId, StringComparison.OrdinalIgnoreCase)).ToList();
+         firstMsg = $"# Special Indy for {teacherId}:\n";
+      }
 
       Console.WriteLine(specialIndys.Count);
 
@@ -40,6 +44,6 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
             specialIndys,
             Context, 
             element => $"- {element.TeacherId} \t {element.AreaOfExpertise} on {element.Day} {element.Hour} ({element.StartDate} - {element.EndDate})\n",
-            "# Special Indy:\n");
+            firstMsg);
    }
 }

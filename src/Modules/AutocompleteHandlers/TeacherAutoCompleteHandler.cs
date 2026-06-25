@@ -22,7 +22,7 @@ public class TeacherAutoCompleteHandler : AutocompleteHandler
           var suggestion = teacherIDs
              .Where(x => x.Contains(input, StringComparison.OrdinalIgnoreCase))
              .Distinct()
-             .Select(x => new AutocompleteResult(x, x.ToLower()))
+             .Select(x => new AutocompleteResult(x, x))
              .Take(25);
 
           return AutocompletionResult.FromSuccess(suggestion);
