@@ -34,7 +34,7 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
       string firstMsg = "# Special Indys:\n";
       if (!string.IsNullOrWhiteSpace(teacherId))
       {
-         specialIndys = specialIndys.Where(x => x.TeacherId.Contains(teacherId, StringComparison.OrdinalIgnoreCase)).ToList();
+         specialIndys = specialIndys.Where(x => x.TeacherId.Equals(teacherId, StringComparison.OrdinalIgnoreCase)).ToList();
          firstMsg = $"# Special Indy for {teacherId}:\n";
       }
 
