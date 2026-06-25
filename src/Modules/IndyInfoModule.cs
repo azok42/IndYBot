@@ -31,7 +31,7 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
       await MessageHelper.SendListMessageAsync(
             specialIndys,
             Context, 
-            element => $"- {element.TeacherId} \t {element.AreaOfExpertise} on {element.Day} ({element.StartDate} - {element.EndDate})\n",
+            element => $"- {element.TeacherId} \t {element.AreaOfExpertise} on {element.Day} {element.Hour} ({element.StartDate} - {element.EndDate})\n",
             "# Special Indy:\n");
    }
 }
