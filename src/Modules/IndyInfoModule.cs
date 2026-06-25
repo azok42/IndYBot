@@ -66,7 +66,7 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
       Hour4 = 4
    }
 
-   [SlashCommand("hours", "get a list of all indy hours")]
+   [SlashCommand("hours", "Get a list of all indy hours!")]
    public async Task IndyHourCommand(
          [Summary("hour", "Show only hours in hour")] Hour? hour = null,
          [Summary("day", "Show only hours on day")] Day? day = null,
