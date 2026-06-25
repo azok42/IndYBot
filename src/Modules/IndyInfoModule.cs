@@ -1,7 +1,7 @@
 using Discord.Interactions;
 using IndYLib.Services;
 
-namespace IndYBot;
+namespace IndYBot.Modules;
 
 public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
 {

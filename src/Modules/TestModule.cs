@@ -1,6 +1,6 @@
 using Discord.Interactions;
 
-namespace IndYBot;
+namespace IndYBot.Modules;
 
 public class TestModule : InteractionModuleBase<SocketInteractionContext>
 {
