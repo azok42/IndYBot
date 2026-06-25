@@ -1,5 +1,6 @@
 using Discord.Interactions;
 using IndYLib.Services;
+using IndYBot.Helpers;
 
 namespace IndYBot.Modules;
 
@@ -12,19 +13,11 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
 
       await RespondAsync("Getting all subjects...", ephemeral: true);
 
-      string msg = "# Subjects:\n";
-      foreach (var subject in subjects)
-      {
-         if (msg.Count() < 1900)
-         {
-            msg += $"- {subject.SubjectId} ({subject.SubjectLong})\n";
-            continue;
-         }
-
-         await Context.Channel.SendMessageAsync(msg);
-      }
-
-      await Context.Channel.SendMessageAsync(msg);
+      await MessageHelper.SendListMessageAsync(
+            subjects,
+            Context, 
+            element => $"- {element.SubjectId} ({element.SubjectLong})\n",
+            "# Subjects:\n");
    }
 
    [SlashCommand("specialindy", "Get a list of current special indys!")]
@@ -34,26 +27,10 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
 
       await RespondAsync("Getting all special indys...", ephemeral: true);
 
-      bool sendExtraMsg = false;
-      string msg = "# Special Indy:\n";
-      foreach (var specialIndy in specialIndys)
-      {
-         string tmpMsg = $"- {specialIndy}\n";
-
-         if (msg.Count() + tmpMsg.Count() >= 2000)
-         {
-            await Context.Channel.SendMessageAsync(msg);
-            msg = tmpMsg;
-            sendExtraMsg = false;
-         }
-         else
-         {
-            msg += tmpMsg;
-            sendExtraMsg = true;
-         }
-      }
-
-      if (sendExtraMsg)
-         await Context.Channel.SendMessageAsync(msg);
+      await MessageHelper.SendListMessageAsync(
+            specialIndys,
+            Context, 
+            element => $"- {element.TeacherId} {element.AreaOfExpertise} on {element.Day} ({element.StartDate} - {element.EndDate})\n",
+            "# Special Indy:\n");
    }
 }
