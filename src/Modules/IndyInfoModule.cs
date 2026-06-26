@@ -121,5 +121,15 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
                Context,
                e => $"- {e.TeacherId} {e.Hour}: {e.Count}\n",
                "# Studentcounts:\n");
+
+         var ids = studentcounts.Select(x => x.TeacherId).ToList();
+         var counts = studentcounts.Select(x => (double) x.Count).ToList();
+
+         await PlotHelper.SendBasicPlot(
+               Context,
+               ids, counts,
+               "Studentcounts",
+               "Teachers",
+               "Counts");
       }
 }

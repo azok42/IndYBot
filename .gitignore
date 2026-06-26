@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# tmp files/directories
+tmp*
+
 # User-specific files
 *.rsuser
 *.suo
