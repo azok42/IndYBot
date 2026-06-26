@@ -25,7 +25,7 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
    [SlashCommand("specialindy", "Get a list of current special indys!")]
    public async Task SpecialIndyCommand(
          [Summary("teacher-id", "Only show special indys from teacher")]
-         [Autocomplete(typeof(IndyDayAutocompleteHandler))] string teacherId = "")
+         [Autocomplete(typeof(TeacherAutocompleteHandler))] string teacherId = "")
    {
       await RespondAsync("Getting all special indys...", ephemeral: true);
 
@@ -71,7 +71,7 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
          [Summary("hour", "Show only hours in hour")] Hour? hour = null,
          [Summary("day", "Show only hours on day")] Day? day = null,
          [Summary("teacher", "Only show hours from teacher")]
-         [Autocomplete(typeof(IndyDayAutocompleteHandler))] string teacherId = "")
+         [Autocomplete(typeof(TeacherAutocompleteHandler))] string teacherId = "")
    {
       await RespondAsync("Getting all indy hours...", ephemeral: true);
 
