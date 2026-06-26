@@ -103,8 +103,11 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
             "# Indy hours:\n");
    }
 
-   [SlashCommand("studentcount", "Get a list of teachers and their indy studentcount!")] 
-      public async Task StudentCountCommand(
+   [Group("studentcount", "Get studentcount for a specific day!")]
+   public class StudentCountSubCommandModule : InteractionModuleBase<SocketInteractionContext>
+   {
+      [SlashCommand("list", "Get studentcounts in form of a list!")] 
+      public async Task StudentCountListCommand(
             [Summary("date", "Date to get studentcount for!")]
             [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
             [Summary("hour", "Show only hours in hour")] Hour? hour = null)
@@ -121,6 +124,20 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
                Context,
                e => $"- {e.TeacherId} {e.Hour}: {e.Count}\n",
                "# Studentcounts:\n");
+      }
+
+      [SlashCommand("plot", "Get studentcounts in form of a plot!")]
+      public async Task StudentCountPlotCommand(
+            [Summary("date", "Date to get studentcount for!")]
+            [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
+            [Summary("hour", "Show only hours in hour")] Hour? hour = null)
+      {
+         await RespondAsync("Getting studentcount...", ephemeral: true);
+
+         var studentcounts = await IndyClient.GetStudentCountAsync(DateOnly.Parse(date));
+
+         if (hour != null)
+            studentcounts = studentcounts.Where(x => (Hour) x.Hour == hour.Value).ToList();
 
          var ids = studentcounts.Select(x => x.TeacherId).ToList();
          var counts = studentcounts.Select(x => (double) x.Count).ToList();
@@ -132,4 +149,5 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
                "Teachers",
                "Counts");
       }
+   }
 }
