@@ -102,4 +102,24 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
             e => $"- {e.TeacherId} ({e.TeacherName}) in {e.Room} on {e.DayName} {e.Hour}\n",
             "# Indy hours:\n");
    }
+
+   [SlashCommand("studentcount", "Get a list of today's teachers and their indy studentcount!")] 
+      public async Task StudentCountCommand(
+            [Summary("date", "Date to get studentcount for!")]
+            [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
+            [Summary("hour", "Show only hours in hour")] Hour? hour = null)
+      {
+         await RespondAsync("Getting studentcount...", ephemeral: true);
+
+         var studentcounts = await IndyClient.GetStudentCountAsync(DateOnly.Parse(date));
+
+         if (hour != null)
+            studentcounts = studentcounts.Where(x => (Hour) x.Hour == hour.Value).ToList();
+
+         await MessageHelper.SendListMessageAsync(
+               studentcounts,
+               Context,
+               e => $"- {e.TeacherId} {e.Hour}: {e.Count}\n",
+               "# Studentcounts:\n");
+      }
 }
