@@ -8,7 +8,7 @@ This is a Discord bot for interacting with the IndY-API used in my school.
 
 - Make directory bot-info and inside file 'token'
 
-- Create on [Discord's Developer website](https://https://discord.com/developers/home) a bot or get the **token** from an existing one.
+- Create on [Discord's Developer website](https://discord.com/developers/home) a bot or get the **token** from an existing one.
 
 - Paste the token into the 'token' file
 
