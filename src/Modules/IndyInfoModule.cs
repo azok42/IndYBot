@@ -103,7 +103,7 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
             "# Indy hours:\n");
    }
 
-   [SlashCommand("studentcount", "Get a list of today's teachers and their indy studentcount!")] 
+   [SlashCommand("studentcount", "Get a list of teachers and their indy studentcount!")] 
       public async Task StudentCountCommand(
             [Summary("date", "Date to get studentcount for!")]
             [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
