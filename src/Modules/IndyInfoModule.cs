@@ -23,20 +23,20 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
             "# Subjects:\n");
    }
 
-   [SlashCommand("specialindy", "Get a list of current special indys!")]
+   [SlashCommand("specialindy", "Get a list of current Special-IndYs!")]
    public async Task SpecialIndyCommand(
-         [Summary("teacher-id", "Only show special indys from teacher")]
+         [Summary("teacher-id", "Only show Special-IndYs from teacher")]
          [Autocomplete(typeof(TeacherAutocompleteHandler))] string teacherId = "")
    {
-      await RespondAsync("Getting all special indys...", ephemeral: true);
+      await RespondAsync("Getting all Special-IndYs...", ephemeral: true);
 
       var specialIndys = await IndyClient.GetSpecialIndyAsync();
 
-      string firstMsg = "# Special Indys:\n";
+      string firstMsg = "# Special-IndYs:\n";
       if (!string.IsNullOrWhiteSpace(teacherId))
       {
          specialIndys = specialIndys.Where(x => x.TeacherId.Equals(teacherId, StringComparison.OrdinalIgnoreCase)).ToList();
-         firstMsg = $"# Special Indy for {teacherId}:\n";
+         firstMsg = $"# Special-IndY for {teacherId}:\n";
       }
 
       await MessageHelper.SendListMessageAsync(
@@ -67,14 +67,14 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
       Hour4 = 4
    }
 
-   [SlashCommand("hours", "Get a list of all indy hours!")]
+   [SlashCommand("hours", "Get a list of all IndY-Hours!")]
    public async Task IndyHourCommand(
          [Summary("hour", "Show only hours in hour")] Hour? hour = null,
          [Summary("day", "Show only hours on day")] Day? day = null,
          [Summary("teacher", "Only show hours from teacher")]
          [Autocomplete(typeof(TeacherAutocompleteHandler))] string teacherId = "")
    {
-      await RespondAsync("Getting all indy hours...", ephemeral: true);
+      await RespondAsync("Getting all IndY-Hours...", ephemeral: true);
 
       var indyHours = await IndyClient.GetIndyHoursAsync();
 
@@ -101,7 +101,7 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
             indyHours,
             Context,
             e => $"- {e.TeacherId} ({e.TeacherName}) in {e.Room} on {e.DayName} {e.Hour}\n",
-            "# Indy hours:\n");
+            "# IndY-Hours:\n");
    }
 
    [Group("studentcount", "Get studentcount for a specific day!")]
