@@ -173,4 +173,20 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
                isDark: isDarkMode);
       }
    }
+
+   [SlashCommand("indydays", "Get all days from 1 month range which are IndY-Days!")]
+   public async Task IndyDaysCommand()
+   {
+      await RespondAsync("Getting IndY-Days...", ephemeral: true);
+
+      var today = DateOnly.FromDateTime(DateTime.Today);
+      var indyDays = await IndyClient.GetIndyDaysAsync(today.AddDays(-15), today.AddDays(15));
+
+      await MessageHelper.SendListMessageAsync(
+            indyDays,
+            Context, 
+            e => $"- {e.DayName} {e.Date}\n",
+            "# IndY-Days:\n");
+   }
+
 }
