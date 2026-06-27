@@ -2,6 +2,7 @@ using Discord.Interactions;
 using IndYLib.Services;
 using IndYBot.Helpers;
 using IndYBot.Modules.AutocompleteHandlers;
+using System.Globalization;
 
 namespace IndYBot.Modules;
 
@@ -135,19 +136,39 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
          await RespondAsync("Getting studentcount...", ephemeral: true);
 
          var studentcounts = await IndyClient.GetStudentCountAsync(DateOnly.Parse(date));
+         var indyHours = await IndyClient.GetIndyHoursAsync();
+
+         studentcounts.Sort((a, b) => a.TeacherId.CompareTo(b.TeacherId));
+         indyHours.Sort((a, b) => a.TeacherId.CompareTo(b.TeacherId));
 
          if (hour != null)
-            studentcounts = studentcounts.Where(x => (Hour) x.Hour == hour.Value).ToList();
+         {
+            studentcounts = studentcounts
+               .Where(x => (Hour) x.Hour == hour.Value)
+               .ToList();
+
+            indyHours = indyHours
+               .Where(x => (Hour) x.Hour == hour.Value)
+               .ToList();
+         }
 
          var ids = studentcounts.Select(x => x.TeacherId).ToList();
          var counts = studentcounts.Select(x => (double) x.Count).ToList();
+         var maxCount = indyHours
+            .Where(x => x.DayName.Equals(DateOnly.Parse(date).ToString("ddd", new CultureInfo("de-DE"))))
+            .Select(sc => {
+                  var matchingHour = indyHours.FirstOrDefault(ih => ih.TeacherId.Equals(sc.TeacherId));
+                  return matchingHour != null ? (double) matchingHour.StudentLimit : 0.0;
+            })
+            .ToList();
 
          await PlotHelper.SendBasicPlot(
                Context,
                ids, counts,
                "Studentcounts",
                "Teachers",
-               "Counts");
+               "Counts", 
+               secondYValues: maxCount);
       }
    }
 }

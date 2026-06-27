@@ -14,11 +14,23 @@ public class PlotHelper
          string xLabel,
          string yLabel,
          string colorHex = "#3498db",
-         bool isDark = false)
+         bool isDark = false,
+         List<double>? secondYValues = null)
    {
       var xPos = Enumerable.Range(0, xValues.Count).Select(i => (double)i).ToList();
 
       Plot plot = new();
+
+      if (secondYValues != null)
+      {
+         var secondBars = plot.Add.Bars(xPos, secondYValues);
+
+         foreach (var secondBar in secondBars.Bars)
+         {
+            secondBar.FillColor = ScottPlot.Color.FromHex(colorHex).Lighten(0.4);
+         }
+      }
+
       var bars = plot.Add.Bars(xPos, yValues);
 
       foreach (var bar in bars.Bars)
