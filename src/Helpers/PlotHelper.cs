@@ -48,6 +48,12 @@ public class PlotHelper
       plot.YLabel(yLabel);
       plot.Axes.Margins(bottom: 0);
 
+      if (isDark)
+      {
+         plot.Axes.Color(new ("#ebebed"));
+         plot.FigureBackground.Color = new ("#29292d");
+      }
+
       plot.SavePng($"./tmpFiles/{title.ToLower()}.png", 1280, 720);
       var attachment = new FileAttachment($"./tmpFiles/{title.ToLower()}.png", $"{title.ToLower()}.png");
       await context.Channel.SendFileAsync(attachment);
