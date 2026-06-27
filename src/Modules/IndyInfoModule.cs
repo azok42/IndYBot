@@ -175,12 +175,28 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
    }
 
    [SlashCommand("indydays", "Get all days from 1 month range which are IndY-Days!")]
-   public async Task IndyDaysCommand()
+   public async Task IndyDaysCommand(
+         [Summary("month", "The month to get IndY-Days for")] int month = -1)
    {
       await RespondAsync("Getting IndY-Days...", ephemeral: true);
 
       var today = DateOnly.FromDateTime(DateTime.Today);
-      var indyDays = await IndyClient.GetIndyDaysAsync(today.AddDays(-15), today.AddDays(15));
+
+      DateOnly startDate;
+      DateOnly endDate;
+
+      if (month == -1)
+      {
+         startDate = today.AddDays(-15);
+         endDate = today.AddDays(15);
+      }
+      else
+      {
+         startDate = new (today.Year, month, 1);
+         endDate = new (today.Year, month, DateTime.DaysInMonth(today.Year, month));
+      }
+
+      var indyDays = await IndyClient.GetIndyDaysAsync(startDate, endDate);
 
       await MessageHelper.SendListMessageAsync(
             indyDays,
