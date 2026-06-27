@@ -131,7 +131,8 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
       public async Task StudentCountPlotCommand(
             [Summary("date", "Date to get studentcount for!")]
             [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
-            [Summary("hour", "Show only hours in hour")] Hour? hour = null)
+            [Summary("hour", "Show only hours in hour")] Hour? hour = null,
+            [Summary("darkMode", "Wether to enable dark mode or not. Default: true")] bool isDarkMode = true)
       {
          await RespondAsync("Getting studentcount...", ephemeral: true);
 
@@ -168,7 +169,8 @@ public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
                "Studentcounts",
                "Teachers",
                "Counts", 
-               secondYValues: maxCount);
+               secondYValues: maxCount,
+               isDark: isDarkMode);
       }
    }
 }
