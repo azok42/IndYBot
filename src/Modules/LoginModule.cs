@@ -28,6 +28,5 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
       var client = await _indyAuth.CreateClientAsync(modal.UsernameInput, modal.PasswordInput);
 
       await RespondAsync("Login successful!", ephemeral: true);
-      await ReplyAsync("email: " + (await client.GetStudentAsync()).First().EMail);
    }
 }
