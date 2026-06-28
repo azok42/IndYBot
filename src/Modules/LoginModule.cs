@@ -13,8 +13,8 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
       _indyAuth = indyAuth;
    }
 
-   [SlashCommand("modal", "test modals")]
-   public async Task ModalTestCommand()
+   [SlashCommand("login", "Login temporarily without saving credentials!")]
+   public async Task LoginCommand()
    {
       await RespondWithModalAsync<LoginModal>("login-modal");
    }
