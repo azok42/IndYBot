@@ -1,6 +1,8 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using IndYLib.Extensions;
+using IndYLib.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IndYBot;
@@ -21,10 +23,12 @@ class Bot
          .AddSingleton<DiscordSocketClient>()
          .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
          .AddSingleton<InteractionHandler>()
+         .AddIndyAuth()
          .BuildServiceProvider();
 
       var client = services.GetRequiredService<DiscordSocketClient>();
       var interactionService = services.GetRequiredService<InteractionService>();
+      var indyAuth = services.GetRequiredService<IIndyAuth>();
 
       client.Log += LogAsync;
       interactionService.Log += LogAsync;
