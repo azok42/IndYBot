@@ -7,7 +7,7 @@ using System.Globalization;
 namespace IndYBot.Modules;
 
 [Group("get", "Getters")]
-public class IndyInfoModule : InteractionModuleBase<SocketInteractionContext>
+public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
 {
    [SlashCommand("subjects", "Get a list of all valid subjects!")]
    public async Task SubjectsCommand()
