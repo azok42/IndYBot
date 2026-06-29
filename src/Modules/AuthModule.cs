@@ -1,5 +1,6 @@
 using Discord.Interactions;
 using IndYBot.Modules.Services;
+using IndYBot.Helpers;
 using IndYLib.Interfaces;
 
 namespace IndYBot.Modules;
@@ -35,5 +36,17 @@ public class AuthModule : InteractionModuleBase<SocketInteractionContext>
       var student = (await _client!.GetStudentAsync()).First();
 
       await RespondAsync($"{student.StudentId}: {student.Firstname} {student.Lastname} {student.Class} ({student.EMail})", ephemeral: true);
+   }
+
+   [SlashCommand("teachers", "Get a list of all teachers!")]
+   public async Task TeachersCommand()
+   {
+      var teachers = (await _client!.GetTeachersAsync());
+
+      await MessageHelper.SendListMessageAsync(
+            teachers,
+            Context,
+            e => $"- **{e.TeacherId}** ({e.Firstname} {e.Lastname}): {e.Expertises}\n",
+            "# Teachers:\n");
    }
 }
