@@ -22,14 +22,6 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
       await RespondWithModalAsync<LoginModal>("login-modal");
    }
 
-   [SlashCommand("student", "Get info about yourself!")]
-   public async Task StudentInfoCommand()
-   {
-      var client = (await _loginService.getClient(Context.Interaction.User.Id).GetStudentAsync()).First();
-
-      await RespondAsync($"{client.StudentId}: {client.Firstname} {client.Lastname} {client.Class} ({client.EMail})", ephemeral: true);
-   }
-
    [ModalInteraction("login-modal")]
    public async Task HandleLoginModal(LoginModal modal)
    {
