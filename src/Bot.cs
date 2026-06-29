@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using IndYLib.Extensions;
 using IndYLib.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using IndYBot.Modules.Services;
 
 namespace IndYBot;
 
