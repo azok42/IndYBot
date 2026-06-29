@@ -20,7 +20,7 @@ public class AuthModule : InteractionModuleBase<SocketInteractionContext>
    {
       try
       {
-         _client = _loginService.getClient(Context.Interaction.User.Id);
+         _client = _loginService.GetClient(Context.Interaction.User.Id);
       }
       catch (KeyNotFoundException)
       {

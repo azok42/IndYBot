@@ -28,7 +28,7 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
       if (modal.UsernameInput == null || modal.PasswordInput == null)
          throw new NullReferenceException("Input is null");
       
-      _loginService.addClient(Context.Interaction.User.Id, await _indyAuth.CreateClientAsync(modal.UsernameInput, modal.PasswordInput));
+      _loginService.AddClient(Context.Interaction.User.Id, await _indyAuth.CreateClientAsync(modal.UsernameInput, modal.PasswordInput));
 
       await RespondAsync("Login successful!", ephemeral: true);
    }
