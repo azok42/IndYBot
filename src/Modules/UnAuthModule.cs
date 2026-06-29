@@ -19,7 +19,7 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
       await MessageHelper.SendListMessageAsync(
             subjects,
             Context, 
-            element => $"- {element.SubjectId} ({element.SubjectLong})\n",
+            element => $"- **{element.SubjectId}** ({element.SubjectLong})\n",
             "# Subjects:\n");
    }
 
@@ -42,7 +42,7 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
       await MessageHelper.SendListMessageAsync(
             specialIndys,
             Context, 
-            element => $"- {element.TeacherId} \t {element.AreaOfExpertise} on {element.Day} {element.Hour} ({element.StartDate} - {element.EndDate})\n",
+            element => $"- **{element.TeacherId}** \t {element.AreaOfExpertise} on {element.Day} {element.Hour} ({element.StartDate} - {element.EndDate})\n",
             firstMsg);
    }
 
@@ -100,7 +100,7 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
       await MessageHelper.SendListMessageAsync(
             indyHours,
             Context,
-            e => $"- {e.TeacherId} ({e.TeacherName}) in {e.Room} on {e.DayName} {e.Hour}\n",
+            e => $"- **{e.TeacherId}** ({e.TeacherName}) in {e.Room} on {e.DayName} {e.Hour}\n",
             "# IndY-Hours:\n");
    }
 
@@ -123,7 +123,7 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
          await MessageHelper.SendListMessageAsync(
                studentcounts,
                Context,
-               e => $"- {e.TeacherId} {e.Hour}: {e.Count}\n",
+               e => $"- **{e.TeacherId} {e.Hour}**: {e.Count}\n",
                "# Studentcounts:\n");
       }
 
@@ -201,7 +201,7 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
       await MessageHelper.SendListMessageAsync(
             indyDays,
             Context, 
-            e => $"- {e.DayName} {e.Date}\n",
+            e => $"- **{e.DayName}** {e.Date}\n",
             "# IndY-Days:\n");
    }
 
