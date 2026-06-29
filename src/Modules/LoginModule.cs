@@ -1,5 +1,5 @@
 using Discord.Interactions;
-using IndYBot.Modals;
+using IndYBot.Modules.Modals;
 using IndYLib.Interfaces;
 
 namespace IndYBot.Modules;
