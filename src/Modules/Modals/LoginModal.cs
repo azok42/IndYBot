@@ -1,6 +1,6 @@
 using Discord.Interactions;
 
-namespace IndYBot.Modals;
+namespace IndYBot.Modules.Modals;
 
 public class LoginModal : IModal
 {
