@@ -11,6 +11,8 @@ public class InteractionHandler
    private readonly InteractionService _handler;
    private readonly IServiceProvider _services;
 
+   private static bool commandsRegistered = false;
+
    public InteractionHandler(DiscordSocketClient client, InteractionService handler, IServiceProvider services)
    {
       _client = client;
@@ -28,6 +30,14 @@ public class InteractionHandler
 
    private async Task ReadyAsync()
    {
+      ulong tmpChannelID = UInt64.Parse(File.ReadAllText("bot-info/tmpChannel").Trim());
+      var channel = _client.GetChannel(tmpChannelID) as IMessageChannel;
+      if (channel != null)
+         await channel.SendMessageAsync("online!");
+
+      if (commandsRegistered)
+         return;
+
       await _handler.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
       ulong tmpGuildID = UInt64.Parse(File.ReadAllText("bot-info/tmpGuild").Trim());
@@ -35,10 +45,7 @@ public class InteractionHandler
 
       Console.WriteLine($"{meh.Count()} commands are registered");
 
-      ulong tmpChannelID = UInt64.Parse(File.ReadAllText("bot-info/tmpChannel").Trim());
-      var channel = _client.GetChannel(tmpChannelID) as IMessageChannel;
-      if (channel != null)
-         await channel.SendMessageAsync("online!");
+      commandsRegistered = true;
    }
 
    private async Task HandleInteractionAsync(SocketInteraction interaction)
