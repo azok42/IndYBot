@@ -24,7 +24,7 @@ public class AuthModule : InteractionModuleBase<SocketInteractionContext>
       }
       catch (KeyNotFoundException)
       {
-         RespondAsync("## Login needed", ephemeral: true);
+         RespondAsync("## [ERROR] Login needed", ephemeral: true);
          throw;
       }
    }
