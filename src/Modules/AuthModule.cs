@@ -65,4 +65,35 @@ public class AuthModule : InteractionModuleBase<SocketInteractionContext>
             e => $"- **{e.TeacherId}:** {e.Hour} {e.Date}\n",
             "# Teacher Absences:\n");
    }
+   
+   [SlashCommand("statuses", "Get the status of each indy day in range!")]
+   public async Task DayStatusesCommand(
+         [Summary("month", "The month to get statuses for")] int month = -1)
+   {
+      await RespondAsync("Getting statuses...");
+
+      var today = DateOnly.FromDateTime(DateTime.Today);
+
+      DateOnly startDate;
+      DateOnly endDate;
+
+      if (month == -1)
+      {
+         startDate = today.AddDays(-15);
+         endDate = today.AddDays(15);
+      }
+      else
+      {
+         startDate = new (today.Year, month, 1);
+         endDate = new (today.Year, month, DateTime.DaysInMonth(today.Year, month));
+      }
+
+      var statuses = await _client!.GetDayStatusesAsync(startDate, endDate);
+
+      await MessageHelper.SendListMessageAsync(
+            statuses,
+            Context,
+            e => $"-  **{e.Date} {e.DayName}:** {e.Status.ToString()}\n",
+            "# Statuses:\n");
+   }
 }
