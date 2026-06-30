@@ -41,6 +41,8 @@ public class AuthModule : InteractionModuleBase<SocketInteractionContext>
    [SlashCommand("teachers", "Get a list of all teachers!")]
    public async Task TeachersCommand()
    {
+      await RespondAsync("Getting teachers...");
+
       var teachers = (await _client!.GetTeachersAsync());
 
       await MessageHelper.SendListMessageAsync(
