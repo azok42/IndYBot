@@ -1,5 +1,7 @@
 using Discord.Interactions;
 using IndYLib.Services;
+using IndYLib.Models;
+using IndYLib.Exceptions;
 using IndYBot.Helpers;
 using IndYBot.Modules.AutocompleteHandlers;
 using System.Globalization;
@@ -30,7 +32,16 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
    {
       await RespondAsync("Getting all Special-IndYs...", ephemeral: true);
 
-      var specialIndys = await IndyClient.GetSpecialIndyAsync();
+      List<SpecialIndy> specialIndys;
+      try
+      {
+         specialIndys = await IndyClient.GetSpecialIndyAsync();
+      }
+      catch (NotFoundException)
+      {
+         await ReplyAsync("No Special-IndY found!");
+         return;
+      }
 
       string firstMsg = "# Special-IndYs:\n";
       if (!string.IsNullOrWhiteSpace(teacherId))
@@ -76,7 +87,17 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
    {
       await RespondAsync("Getting all IndY-Hours...", ephemeral: true);
 
-      var indyHours = await IndyClient.GetIndyHoursAsync();
+
+      List<IndyHour> indyHours;
+      try
+      {
+         indyHours = await IndyClient.GetIndyHoursAsync();
+      }
+      catch (NotFoundException)
+      {
+         await ReplyAsync("No IndY-Hours found!");
+         return;
+      }
 
       if (hour != null)
          indyHours = indyHours.Where(x => (Hour) x.Hour == hour.Value).ToList();
@@ -115,7 +136,16 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
       {
          await RespondAsync("Getting studentcount...", ephemeral: true);
 
-         var studentcounts = await IndyClient.GetStudentCountAsync(DateOnly.Parse(date));
+         List<StudentCount> studentcounts;
+         try
+         {
+            studentcounts = await IndyClient.GetStudentCountAsync(DateOnly.Parse(date));
+         }
+         catch (NotFoundException)
+         {
+            await ReplyAsync("No Studentcounts for the given date found!");
+            return;
+         }
 
          if (hour != null)
             studentcounts = studentcounts.Where(x => (Hour) x.Hour == hour.Value).ToList();
@@ -136,8 +166,18 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
       {
          await RespondAsync("Getting studentcount...", ephemeral: true);
 
-         var studentcounts = await IndyClient.GetStudentCountAsync(DateOnly.Parse(date));
-         var indyHours = await IndyClient.GetIndyHoursAsync();
+         List<StudentCount> studentcounts;
+         List<IndyHour> indyHours;
+         try
+         {
+            studentcounts = await IndyClient.GetStudentCountAsync(DateOnly.Parse(date));
+            indyHours = await IndyClient.GetIndyHoursAsync();
+         }
+         catch (NotFoundException)
+         {
+            await ReplyAsync("No Studentcounts or IndY-Hours for the given date found!");
+            return;
+         }
 
          studentcounts.Sort((a, b) => a.TeacherId.CompareTo(b.TeacherId));
          indyHours.Sort((a, b) => a.TeacherId.CompareTo(b.TeacherId));
@@ -196,7 +236,22 @@ public class UnAuthModule : InteractionModuleBase<SocketInteractionContext>
          endDate = new (today.Year, month, DateTime.DaysInMonth(today.Year, month));
       }
 
-      var indyDays = await IndyClient.GetIndyDaysAsync(startDate, endDate);
+      List<IndyDay> indyDays;
+      try
+      {
+         indyDays = await IndyClient.GetIndyDaysAsync(startDate, endDate);
+      }
+      catch (NotFoundException)
+      {
+         await ReplyAsync("No IndY-Days for the given range found!");
+         return;
+      }
+
+      if (indyDays.Count() <= 0)
+      {
+         await ReplyAsync("No IndY-Days in the given range found!");
+         return;
+      }
 
       await MessageHelper.SendListMessageAsync(
             indyDays,
