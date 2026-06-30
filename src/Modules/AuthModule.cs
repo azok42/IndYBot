@@ -51,4 +51,18 @@ public class AuthModule : InteractionModuleBase<SocketInteractionContext>
             e => $"- **{e.TeacherId}** ({e.Firstname} {e.Lastname}): {e.Expertises}\n",
             "# Teachers:\n");
    }
+
+   [SlashCommand("teacherabsences", "Get all teacher absences!")]
+   public async Task TeacherAbsencesCommand()
+   {
+      await RespondAsync("Getting teacher-absences...");
+
+      var teacherAbsences = await _client!.GetTeacherAbsencesAsync();
+
+      await MessageHelper.SendListMessageAsync(
+            teacherAbsences,
+            Context,
+            e => $"- **{e.TeacherId}:** {e.Hour} {e.Date}\n",
+            "# Teacher Absences:\n");
+   }
 }
