@@ -1,7 +1,12 @@
+using Discord;
 using Discord.Interactions;
 using IndYBot.Modules.Services;
 using IndYBot.Helpers;
+using IndYBot.Modules.AutocompleteHandlers;
 using IndYLib.Interfaces;
+using IndYLib.Models;
+using IndYLib.Models.Entry;
+using IndYLib.Exceptions;
 
 namespace IndYBot.Modules;
 
@@ -95,5 +100,106 @@ public class AuthModule : InteractionModuleBase<SocketInteractionContext>
             Context,
             e => $"-  **{e.Date} {e.DayName}:** {e.Status.ToString()}\n",
             "# Statuses:\n");
+   }
+
+   [SlashCommand("entries", "Get made entries for a specific date!")]
+   public async Task DayEntriesCommand(
+            [Summary("date", "Date to get entries for!")]
+            [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date)
+   {
+      await RespondAsync($"Getting your entries for {date}...", ephemeral: true);
+
+      FullRetured fullRetured;
+      List<DayStatus> statusList;
+      try
+      {
+         fullRetured = await _client!.GetEntriesAsync(DateOnly.Parse(date));
+         statusList = await _client!.GetDayStatusesAsync(DateOnly.Parse(date), DateOnly.Parse(date).AddDays(1));
+      }
+      catch (InvalidIndyDayException)
+      {
+         await DeleteOriginalResponseAsync();
+         await RespondAsync($"[ERROR] {date} is not a valid IndY-Day!");
+         throw;
+      }
+
+      var status = statusList.First().Status;
+      Color color = GetColorForStatus(status);
+
+      var (hour3Content, hour3Disabled) = ProcessHourData(fullRetured.Hour3, status);
+      var (hour4Content, hour4Disabled) = ProcessHourData(fullRetured.Hour4, status);
+
+      var embed = new EmbedBuilder()
+         .WithTitle($"Entries for date {date}")
+         .WithAuthor(new EmbedAuthorBuilder().WithName("IndYBot"))
+         .WithColor(color)
+         .AddField("Hour 3", hour3Content, true)
+         .AddField("Hour 4", hour4Content, true)
+         .Build();
+
+      var buttons = BuildEntryButtons(hour3Disabled, hour4Disabled);
+      await ReplyAsync(embed: embed, components: buttons);
+   }
+
+   private Color GetColorForStatus(Status status)
+   {
+      return status switch
+      {
+         Status.FullySigned => Color.Green,
+         Status.Open => Color.LightGrey,
+         Status.NotSigned => Color.LightOrange,
+         Status.EntriesMissing => Color.Red,
+         Status.AbsenceEntries => Color.DarkOrange,
+         Status.Cancelled => Color.DarkPurple,
+         Status.Unkown => Color.Teal,
+         _ => throw new Exception($"Invalid status recieved: {status}")
+      };
+   }
+
+   private MessageComponent BuildEntryButtons(bool hour3Disabled, bool hour4Disabled)
+   {
+      return new ComponentBuilder()
+         .WithButton(
+               label: "Make entry for hour 3",
+               customId: "quickEntryHour3",
+               style: ButtonStyle.Primary,
+               disabled: hour3Disabled)
+         .WithButton(
+               label: "Make entry for hour 4",
+               customId: "quickEntryHour4",
+               style: ButtonStyle.Primary,
+               disabled: hour4Disabled)
+         .Build();
+   }
+
+   private (string FieldContent, bool buttonDisabled) ProcessHourData(List<Returned> hour, Status status)
+   {
+      if (hour.Any())
+         return (MakeEntryHourFieldContent(hour.First()), true);
+
+      if (status == Status.EntriesMissing)
+         return ("No entry made!", true);
+
+      return ("No entry made yet!", false);
+   }
+
+   private string MakeEntryHourFieldContent(Returned entry)
+   {
+      return entry switch
+      {
+         NormalReturned normal =>
+            $"- **Type**: Normal\n- **Subject:** {normal.Subject}\n- **Teacher/Room**: {normal.TeacherId} {normal.Room}\n- **Signed**: {normal.IsSigned}\n- **Activity**: {normal.Activity}\n",
+
+         AbsenceReturned absence =>
+            $"- **Type**: Absence\n- **Signed**: {absence.IsSigned}\n",
+
+         SchoolEventReturned schoolevent =>
+            $"- **Type**: Schoolevent\n- **Teacher**: {schoolevent.TeacherId}\n- **Description**: {schoolevent.Description}\n- **Signed**: {schoolevent.IsSigned}\n",
+
+         SpecialReturned special =>
+            $"- **Type**: Special-IndY\n- **Teacher/Room**: {special.TeacherId} {special.Room}\n- **Activity**: {special.Activity}\n- **Range**: {special.StartDate} - {special.EndDate}\n- **Subject**: {special.Subject}\n- **Signed**: {special.IsSigned}\n",
+
+         _ => throw new Exception($"Invalid returned type!")
+      };
    }
 }
