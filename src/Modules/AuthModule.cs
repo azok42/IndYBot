@@ -14,12 +14,14 @@ namespace IndYBot.Modules;
 public class AuthModule : InteractionModuleBase<SocketInteractionContext>
 {
    public readonly LoginService _loginService; 
+   public readonly SQLHelper _sqlHelper; 
 
    private IIndyClient? _client = null;
 
-   public AuthModule(LoginService loginService)
+   public AuthModule(LoginService loginService, SQLHelper sqlHelper)
    {
       _loginService = loginService;
+      _sqlHelper= sqlHelper;
    }
 
    public override void BeforeExecute(ICommandInfo command)
