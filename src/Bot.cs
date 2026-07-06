@@ -5,6 +5,7 @@ using IndYLib.Extensions;
 using IndYLib.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using IndYBot.Modules.Services;
+using IndYBot.Helpers;
 
 namespace IndYBot;
 
@@ -25,6 +26,7 @@ class Bot
          .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
          .AddSingleton<InteractionHandler>()
          .AddSingleton<LoginService>()
+         .AddSingleton<SQLHelper>(x => new SQLHelper(File.ReadAllText("sql/connection").Trim()))
          .AddIndyAuth()
          .BuildServiceProvider();
 
