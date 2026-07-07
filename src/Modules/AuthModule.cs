@@ -1,8 +1,9 @@
 using Discord;
 using Discord.Interactions;
 using IndYBot.Modules.Services;
-using IndYBot.Helpers;
+using IndYBot.Modules.Preconditions;
 using IndYBot.Modules.AutocompleteHandlers;
+using IndYBot.Helpers;
 using IndYLib.Interfaces;
 using IndYLib.Models;
 using IndYLib.Models.Entry;
@@ -10,6 +11,7 @@ using IndYLib.Exceptions;
 
 namespace IndYBot.Modules;
 
+[RequireLogin]
 [Group("info", "Getters with needed login")]
 public class AuthModule : InteractionModuleBase<SocketInteractionContext>
 {
