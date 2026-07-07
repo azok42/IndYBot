@@ -74,7 +74,7 @@ public class InteractionHandler
       switch (result.Error)
       {
          case InteractionCommandError.UnmetPrecondition:
-            await ctx.Interaction.RespondAsync("Not enough permissions!", ephemeral: true);
+            await ctx.Interaction.RespondAsync($"Unmet precondition: {result.ErrorReason}", ephemeral: true);
             break;
 
          case InteractionCommandError.UnknownCommand:
