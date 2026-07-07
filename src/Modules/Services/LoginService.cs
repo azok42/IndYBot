@@ -6,7 +6,7 @@ public class LoginService
 {
    public readonly IIndyAuth _indyAuth;
 
-   public Dictionary<ulong, IIndyClient> clients = new();
+   private Dictionary<ulong, IIndyClient> clients = new();
 
    public LoginService(IIndyAuth indyAuth)
    {
