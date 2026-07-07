@@ -1,18 +1,15 @@
 using Discord.Interactions;
 using IndYBot.Modules.Modals;
 using IndYBot.Modules.Services;
-using IndYLib.Interfaces;
 
 namespace IndYBot.Modules;
 
 public class LoginModule : InteractionModuleBase<SocketInteractionContext>
 {
-   private readonly IIndyAuth _indyAuth;
    private readonly LoginService _loginService;
 
-   public LoginModule(IIndyAuth indyAuth, LoginService loginService)
+   public LoginModule(LoginService loginService)
    {
-      _indyAuth = indyAuth;
       _loginService = loginService;
    }
 
@@ -28,7 +25,7 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
       if (modal.UsernameInput == null || modal.PasswordInput == null)
          throw new NullReferenceException("Input is null");
       
-      _loginService.AddClient(Context.Interaction.User.Id, await _indyAuth.CreateClientAsync(modal.UsernameInput, modal.PasswordInput));
+      await _loginService.AddClient(Context.Interaction.User.Id, modal.UsernameInput, modal.PasswordInput);
 
       await RespondAsync("Login successful!", ephemeral: true);
    }

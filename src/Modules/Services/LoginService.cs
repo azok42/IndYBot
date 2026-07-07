@@ -4,16 +4,26 @@ namespace IndYBot.Modules.Services;
 
 public class LoginService
 {
+   public readonly IIndyAuth _indyAuth;
+
    public Dictionary<ulong, IIndyClient> clients = new();
+
+   public LoginService(IIndyAuth indyAuth)
+   {
+      _indyAuth = indyAuth;
+   }
 
    public void AddClient(ulong userId, IIndyClient client)
    {
       clients.Add(userId, client);
    }
 
-   public IIndyClient GetClient(ulong userId)
+   public async Task<IIndyClient> AddClient(ulong userId, string username, string password)
    {
-      return clients[userId];
+      var client = await _indyAuth.CreateClientAsync(username, password);
+      clients.Add(userId, client);
+
+      return client;
    }
 
    public IIndyClient? GetClient(ulong userId)
