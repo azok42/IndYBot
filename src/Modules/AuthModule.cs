@@ -14,27 +14,17 @@ namespace IndYBot.Modules;
 public class AuthModule : InteractionModuleBase<SocketInteractionContext>
 {
    public readonly LoginService _loginService; 
-   public readonly SQLHelper _sqlHelper; 
 
    private IIndyClient? _client = null;
 
-   public AuthModule(LoginService loginService, SQLHelper sqlHelper)
+   public AuthModule(LoginService loginService)
    {
       _loginService = loginService;
-      _sqlHelper= sqlHelper;
    }
 
    public override void BeforeExecute(ICommandInfo command)
    {
-      try
-      {
-         _client = _loginService.GetClient(Context.Interaction.User.Id);
-      }
-      catch (KeyNotFoundException)
-      {
-         RespondAsync("## [ERROR] Login needed", ephemeral: true);
-         throw;
-      }
+      _client = _loginService.GetClient(Context.Interaction.User.Id);
    }
 
    [SlashCommand("student", "Get info about yourself!")]

@@ -15,4 +15,13 @@ public class LoginService
    {
       return clients[userId];
    }
+
+   public IIndyClient? GetClient(ulong userId)
+   {
+      clients.TryGetValue(userId, out var client);
+
+      return client;
+   }
+
+   public bool HasClient(ulong userId) => clients.ContainsKey(userId);
 }
