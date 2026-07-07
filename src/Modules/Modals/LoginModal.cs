@@ -7,7 +7,7 @@ public class LoginModal : IModal
    public string Title { get; set; } = "Login";
 
    [ModalTextDisplay]
-   public string PasswordInfo {get; set;} = "Your password is generally speaking *not* saved on the server, **BUT** I do **NOT* guarantee safety!";
+   public string PasswordInfo {get; set;} = "Your password is generally speaking *not* saved on the server, **BUT** I do **NOT** guarantee safety!";
 
    [RequiredInput]
    [InputLabel("Username", "Your IndY-Username")]
