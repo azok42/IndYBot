@@ -31,7 +31,7 @@ public class RequireLoginAttribute : PreconditionAttribute
 
       if (userCreds == null)
          return PreconditionResult.FromError("No credentials found for this user!");
-      if (userCreds.password == null)
+      if (string.IsNullOrEmpty((string) userCreds.password))
          return PreconditionResult.FromError("No password has been set by the user!");
 
       await _loginService.AddClient(userId, userCreds.name, userCreds.password);
