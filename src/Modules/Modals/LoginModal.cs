@@ -18,4 +18,11 @@ public class LoginModal : IModal
    [InputLabel("Password", "Your IndY-Password")]
    [ModalTextInput("password", placeholder: "pass1234")]
    public string? PasswordInput { get; set; }
+
+   public LoginModal() { }
+
+   public LoginModal(string username)
+   {
+      UsernameInput = username;
+   }
 }
