@@ -48,7 +48,7 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
 
       var con = _sqlHelper.CreateConnection();
 
-      var sql = "INSERT INTO user (id, name, password) VALUES (@Id, @Name, @Password);";
+      var sql = "INSERT INTO user (id, name, password) VALUES (@Id, @Name, @Password) ON DUPLICATE KEY UPDATE name=@Name, password=@Password;";
       await con.QueryAsync(sql, new {Id = Context.Interaction.User.Id, Name = modal.UsernameInput, Password = modal.PasswordInput});
 
       await RespondAsync("Please save successful! Make a '/info student call' to ensure it worked!", ephemeral: true);
