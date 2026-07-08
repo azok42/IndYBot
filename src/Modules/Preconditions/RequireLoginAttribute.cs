@@ -30,15 +30,15 @@ public class RequireLoginAttribute : PreconditionAttribute
       var userCreds = con.QueryFirstOrDefault(sql, new {Id = userId});
 
       if (userCreds == null)
-         return PreconditionResult.FromError("No credentials found for this user!");
+         return PreconditionResult.FromError("**[ERROR] Login needed!** No credentials found for your user!");
       if (string.IsNullOrEmpty((string) userCreds.password))
-         return PreconditionResult.FromError("No password has been set by the user!");
+         return PreconditionResult.FromError("**[ERROR] Login needed!** No password has been set!");
 
       await _loginService.AddClient(userId, userCreds.name, userCreds.password);
 
       if (_loginService.HasClient(userId))
          return PreconditionResult.FromSuccess();
 
-      return PreconditionResult.FromError("Something went wrong at authentication!");
+      return PreconditionResult.FromError("**[ERROR] Manual login needed!** Something went wrong at authentication!");
    }
 }
