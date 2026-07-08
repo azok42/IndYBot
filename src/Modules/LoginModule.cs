@@ -20,6 +20,12 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
    [SlashCommand("login", "Login temporarily without saving credentials!")]
    public async Task LoginCommand()
    {
+      if (_loginService.HasClient(Context.Interaction.User.Id))
+      {
+         await RespondAsync("No need to login! Already have you in the system!", ephemeral: true);
+         return;
+      }
+
       await RespondWithModalAsync<LoginModal>("login-modal");
    }
 
@@ -28,7 +34,7 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
    {
       if (modal.UsernameInput == null || modal.PasswordInput == null)
          throw new NullReferenceException("Input is null");
-      
+ 
       await _loginService.AddClient(Context.Interaction.User.Id, modal.UsernameInput, modal.PasswordInput);
 
       await RespondAsync("Login successful!", ephemeral: true);
