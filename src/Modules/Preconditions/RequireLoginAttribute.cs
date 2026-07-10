@@ -21,8 +21,14 @@ public class RequireLoginAttribute : PreconditionAttribute
 
       var userId = context.Interaction.User.Id;
 
-      if (_loginService.HasClient(userId))
+      if (_loginService.CheckValidClient(userId))
+      {
          return PreconditionResult.FromSuccess();
+      }
+      else if (_loginService.HasClient(userId))
+      {
+         _loginService.RemoveClient(userId); // remove to not crash on re-creation
+      }
 
       using var con = _sqlHelper.CreateConnection();
 
