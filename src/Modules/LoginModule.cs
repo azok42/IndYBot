@@ -17,6 +17,21 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
       _sqlHelper = sqlHelper;
    }
 
+   [SlashCommand("logoff", "Logoff a user session!")]
+   public async Task LogoffCommand()
+   {
+      if (!_loginService.HasClient(Context.Interaction.User.Id))
+      {
+         await RespondAsync("No session found for you!", ephemeral: true);
+         return;
+      }
+
+      if (_loginService.RemoveClient(Context.Interaction.User.Id))
+         await RespondAsync("Session removed successfully!", ephemeral: true);
+      else
+         await RespondAsync("No session found for you or other error happend!", ephemeral: true);
+   }
+
    [SlashCommand("login", "Login temporarily without saving credentials!")]
    public async Task LoginCommand()
    {

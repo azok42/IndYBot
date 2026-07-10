@@ -26,6 +26,11 @@ public class LoginService
       return client;
    }
 
+   public bool RemoveClient(ulong userId)
+   {
+      return clients.Remove(userId);
+   }
+
    public IIndyClient? GetClient(ulong userId)
    {
       clients.TryGetValue(userId, out var client);
