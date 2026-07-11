@@ -3,11 +3,13 @@ using IndYLib.Exceptions;
 
 namespace IndYBot.Modules.Services;
 
+public record ClientSession(IIndyClient Client, DateTime RefreshTime);
+
 public class LoginService
 {
    public readonly IIndyAuth _indyAuth;
 
-   private Dictionary<ulong, IIndyClient> clients = new();
+   private Dictionary<ulong, ClientSession> clients = new();
 
    public LoginService(IIndyAuth indyAuth)
    {
@@ -16,13 +18,16 @@ public class LoginService
 
    public void AddClient(ulong userId, IIndyClient client)
    {
-      clients.Add(userId, client);
+      var session = new ClientSession(client, DateTime.UtcNow.AddMinutes(30));
+      clients.Add(userId, session);
    }
 
    public async Task<IIndyClient> AddClient(ulong userId, string username, string password)
    {
       var client = await _indyAuth.CreateClientAsync(username, password);
-      clients.Add(userId, client);
+
+      var session = new ClientSession(client, DateTime.UtcNow.AddMinutes(30));
+      clients.Add(userId, session);
 
       return client;
    }
@@ -34,9 +39,16 @@ public class LoginService
 
    public IIndyClient? GetClient(ulong userId)
    {
-      clients.TryGetValue(userId, out var client);
+      clients.TryGetValue(userId, out var session);
 
-      return client;
+      return session == null ? null : session.Client;
+   }
+
+   public ClientSession? GetSession(ulong userId)
+   {
+      clients.TryGetValue(userId, out var session);
+
+      return session;
    }
 
    public bool HasClient(ulong userId) => clients.ContainsKey(userId);
@@ -51,7 +63,13 @@ public class LoginService
       if (!HasClient(userId))
          return false;
 
-      var client = GetClient(userId);
+      var session = GetSession(userId);
+
+      if (session!.RefreshTime.CompareTo(DateTime.UtcNow) < 0)
+         return true;
+
+      var client = session.Client;
+
       try
       {
          var student = client!.GetStudentAsync();
