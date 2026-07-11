@@ -18,7 +18,7 @@ public class IndyDayAutocompleteHandler : AutocompleteHandler
       {
          var today = DateOnly.FromDateTime(DateTime.Today);
 
-         var indyDays = await IndyClient.GetIndyDaysAsync(today.AddDays(-7), today.AddDays(7));
+         var indyDays = await IndyClient.GetIndyDaysAsync(today.AddMonths(-5), today.AddMonths(5));
 
          var suggestion = indyDays
             .Where(x => x.Date.ToString().Contains(input))
