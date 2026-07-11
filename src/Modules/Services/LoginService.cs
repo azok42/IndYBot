@@ -3,7 +3,18 @@ using IndYLib.Exceptions;
 
 namespace IndYBot.Modules.Services;
 
-public record ClientSession(IIndyClient Client, DateTime RefreshTime);
+public class ClientSession
+{
+   public IIndyClient Client { get; set;}
+   
+   public DateTime RefreshTime { get; set;}
+
+   public ClientSession(IIndyClient Client, DateTime RefreshTime)
+   {
+      this.Client = Client;
+      this.RefreshTime = RefreshTime;
+   }
+}
 
 public class LoginService
 {
@@ -54,6 +65,21 @@ public class LoginService
    public bool HasClient(ulong userId) => clients.ContainsKey(userId);
 
    /// <summary>
+   /// Update the refresh time of the session for user with <paramref name="userId"/>
+   /// </summary>
+   /// <param name="userId">The Id of the user session to update.</param>
+   /// <returns>True on success. False if no session has been found.</returns>
+   public bool UpdateRefreshTime(ulong userId)
+   {
+      if (!HasClient(userId))
+         return false;
+
+      GetSession(userId)!.RefreshTime = DateTime.UtcNow;
+
+      return true;
+   }
+
+   /// <summary>
    /// Checks if the client for user with <paramref name="userId"/> has a valid token or not.
    /// </summary>
    /// <param name="userId">The Id of the user to check.</param>
@@ -69,7 +95,6 @@ public class LoginService
          return true;
 
       var client = session.Client;
-
       try
       {
          var student = client!.GetStudentAsync();
@@ -86,6 +111,8 @@ public class LoginService
       {
          return false;
       }
+
+      UpdateRefreshTime(userId);
 
       return true;
    }
