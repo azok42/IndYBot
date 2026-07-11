@@ -1,6 +1,5 @@
 using IndYLib.Interfaces;
 using IndYLib.Exceptions;
-using System.Threading;
 
 namespace IndYBot.Modules.Services;
 
