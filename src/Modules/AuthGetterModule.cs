@@ -13,13 +13,13 @@ namespace IndYBot.Modules;
 
 [RequireLogin]
 [Group("info", "Getters with needed login")]
-public class AuthModule : InteractionModuleBase<SocketInteractionContext>
+public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
 {
    public readonly LoginService _loginService; 
 
    private IIndyClient? _client = null;
 
-   public AuthModule(LoginService loginService)
+   public AuthGetterModule(LoginService loginService)
    {
       _loginService = loginService;
    }
