@@ -14,15 +14,17 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
    [SlashCommand("subjects", "Get a list of all valid subjects!")]
    public async Task SubjectsCommand()
    {
-      await RespondAsync("Getting all subjects...", ephemeral: true);
+      await RespondAsync("# Subjects:");
 
       var subjects = await IndyClient.GetActiveSubjectsAsync();
 
-      await MessageHelper.SendListMessageAsync(
-            subjects,
-            Context, 
-            element => $"- **{element.SubjectId}** ({element.SubjectLong})\n",
-            "# Subjects:\n");
+      if (subjects == null || subjects.Count == 0)
+         await ModifyOriginalResponseAsync(x => x.Content = "No subjects found!");
+      else
+         await MessageHelper.SendListMessageAsync(
+               subjects,
+               Context, 
+               element => $"- **{element.SubjectId}** ({element.SubjectLong})\n");
    }
 
    [SlashCommand("specialindy", "Get a list of current Special-IndYs!")]
@@ -30,7 +32,11 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
          [Summary("teacher-id", "Only show Special-IndYs from teacher")]
          [Autocomplete(typeof(TeacherAutocompleteHandler))] string teacherId = "")
    {
-      await RespondAsync("Getting all Special-IndYs...", ephemeral: true);
+      string msg = "# Special-IndYs:\n";
+      if (!string.IsNullOrWhiteSpace(teacherId))
+         msg = $"# Special-IndY for {teacherId}:\n";
+
+      await RespondAsync(msg);
 
       List<SpecialIndy> specialIndys;
       try
@@ -39,22 +45,17 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
       }
       catch (NotFoundException)
       {
-         await ReplyAsync("No Special-IndY found!");
+         await ModifyOriginalResponseAsync(x => x.Content = "No Special-IndY found!");
          return;
       }
 
-      string firstMsg = "# Special-IndYs:\n";
       if (!string.IsNullOrWhiteSpace(teacherId))
-      {
          specialIndys = specialIndys.Where(x => x.TeacherId.Equals(teacherId, StringComparison.OrdinalIgnoreCase)).ToList();
-         firstMsg = $"# Special-IndY for {teacherId}:\n";
-      }
 
       await MessageHelper.SendListMessageAsync(
             specialIndys,
             Context, 
-            element => $"- **{element.TeacherId}** \t {element.AreaOfExpertise} on {element.Day} {element.Hour} ({element.StartDate} - {element.EndDate})\n",
-            firstMsg);
+            element => $"- **{element.TeacherId}** \t {element.AreaOfExpertise} on {element.Day} {element.Hour} ({element.StartDate} - {element.EndDate})\n");
    }
 
    public enum Day
@@ -85,8 +86,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
          [Summary("teacher", "Only show hours from teacher")]
          [Autocomplete(typeof(TeacherAutocompleteHandler))] string teacherId = "")
    {
-      await RespondAsync("Getting all IndY-Hours...", ephemeral: true);
-
+      await RespondAsync("# IndY-Hours:");
 
       List<IndyHour> indyHours;
       try
@@ -95,7 +95,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
       }
       catch (NotFoundException)
       {
-         await ReplyAsync("No IndY-Hours found!");
+         await ModifyOriginalResponseAsync(x => x.Content = "No IndY-Hours found!");
          return;
       }
 
@@ -121,8 +121,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
       await MessageHelper.SendListMessageAsync(
             indyHours,
             Context,
-            e => $"- **{e.TeacherId}** ({e.TeacherName}) in {e.Room} on {e.DayName} {e.Hour}\n",
-            "# IndY-Hours:\n");
+            e => $"- **{e.TeacherId}** ({e.TeacherName}) in {e.Room} on {e.DayName} {e.Hour}\n");
    }
 
    [Group("studentcount", "Get studentcount for a specific day!")]
@@ -134,7 +133,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
             [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
             [Summary("hour", "Show only hours in hour")] Hour? hour = null)
       {
-         await RespondAsync("Getting studentcount...", ephemeral: true);
+         await RespondAsync("# Studentcounts:");
 
          List<StudentCount> studentcounts;
          try
@@ -143,7 +142,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
          }
          catch (NotFoundException)
          {
-            await ReplyAsync("No Studentcounts for the given date found!");
+            await ModifyOriginalResponseAsync(x => x.Content = "No Studentcounts for the given date found!");
             return;
          }
 
@@ -153,8 +152,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
          await MessageHelper.SendListMessageAsync(
                studentcounts,
                Context,
-               e => $"- **{e.TeacherId} {e.Hour}**: {e.Count}\n",
-               "# Studentcounts:\n");
+               e => $"- **{e.TeacherId} {e.Hour}**: {e.Count}\n");
       }
 
       [SlashCommand("plot", "Get studentcounts in form of a plot!")]
@@ -164,7 +162,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
             [Summary("hour", "Show only hours in hour")] Hour? hour = null,
             [Summary("darkMode", "Wether to enable dark mode or not. Default: true")] bool isDarkMode = true)
       {
-         await RespondAsync("Getting studentcount...", ephemeral: true);
+         await DeferAsync();
 
          List<StudentCount> studentcounts;
          List<IndyHour> indyHours;
@@ -175,7 +173,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
          }
          catch (NotFoundException)
          {
-            await ReplyAsync("No Studentcounts or IndY-Hours for the given date found!");
+            await ModifyOriginalResponseAsync(x => x.Content = "No Studentcounts or IndY-Hours for the given date found!");
             return;
          }
 
@@ -203,7 +201,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
             })
             .ToList();
 
-         await PlotHelper.SendBasicPlot(
+         var plot = PlotHelper.GetBasicPlot(
                Context,
                ids, counts,
                "Studentcounts",
@@ -211,6 +209,8 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
                "Counts", 
                secondYValues: maxCount,
                isDark: isDarkMode);
+
+         await ModifyOriginalResponseAsync(x => x.Attachments = new[] { plot });
       }
    }
 
@@ -218,7 +218,7 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
    public async Task IndyDaysCommand(
          [Summary("month", "The month to get IndY-Days for")] int month = -1)
    {
-      await RespondAsync("Getting IndY-Days...", ephemeral: true);
+      await RespondAsync("# IndY-Days:");
 
       var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -243,21 +243,19 @@ public class GetterModule : InteractionModuleBase<SocketInteractionContext>
       }
       catch (NotFoundException)
       {
-         await ReplyAsync("No IndY-Days for the given range found!");
+         await ModifyOriginalResponseAsync(x => x.Content = "No IndY-Days for the given range found!");
          return;
       }
 
       if (indyDays.Count() <= 0)
       {
-         await ReplyAsync("No IndY-Days in the given range found!");
+         await ModifyOriginalResponseAsync(x => x.Content = "No IndY-Days in the given range found!");
          return;
       }
 
       await MessageHelper.SendListMessageAsync(
             indyDays,
             Context, 
-            e => $"- **{e.DayName}** {e.Date}\n",
-            "# IndY-Days:\n");
+            e => $"- **{e.DayName}** {e.Date}\n");
    }
-
 }

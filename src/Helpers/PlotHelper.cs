@@ -6,7 +6,7 @@ namespace IndYBot.Helpers;
 
 public class PlotHelper
 {
-   public static async Task SendBasicPlot(
+   public static FileAttachment GetBasicPlot(
          SocketInteractionContext context,
          List<string> xValues,
          List<double> yValues,
@@ -55,9 +55,6 @@ public class PlotHelper
       }
 
       plot.SavePng($"./tmpFiles/{title.ToLower()}.png", 1280, 720);
-      var attachment = new FileAttachment($"./tmpFiles/{title.ToLower()}.png", $"{title.ToLower()}.png");
-      await context.Channel.SendFileAsync(attachment);
-
-      File.Delete($"./tmpFiles/{title.ToLower()}.png");
+      return new FileAttachment($"./tmpFiles/{title.ToLower()}.png", $"{title.ToLower()}.png");
    }
 }

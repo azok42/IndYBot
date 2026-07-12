@@ -4,10 +4,10 @@ namespace IndYBot.Helpers;
 
 public class MessageHelper
 {
-   public static async Task SendListMessageAsync<T>(List<T> list, SocketInteractionContext context, Func<T, string> msgListItem, string? firstMsg = null)
+   public static async Task SendListMessageAsync<T>(List<T> list, SocketInteractionContext context, Func<T, string> msgListItem)
    {
       bool sendExtraMsg = false;
-      string msg = firstMsg ?? "";
+      string msg = "";
       foreach (var element in list)
       {
          string tmpMsg = msgListItem(element);

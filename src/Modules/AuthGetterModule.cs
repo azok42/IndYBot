@@ -40,36 +40,40 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
    [SlashCommand("teachers", "Get a list of all teachers!")]
    public async Task TeachersCommand()
    {
-      await RespondAsync("Getting teachers...");
+      await RespondAsync("# Teachers:");
 
       var teachers = (await _client!.GetTeachersAsync());
 
-      await MessageHelper.SendListMessageAsync(
-            teachers,
-            Context,
-            e => $"- **{e.TeacherId}** ({e.Firstname} {e.Lastname}): {e.Expertises}\n",
-            "# Teachers:\n");
+      if (teachers == null || teachers.Count == 0)
+         await ModifyOriginalResponseAsync(x => x.Content = "No teachers found!");
+      else
+         await MessageHelper.SendListMessageAsync(
+               teachers,
+               Context,
+               e => $"- **{e.TeacherId}** ({e.Firstname} {e.Lastname}): {e.Expertises}\n");
    }
 
    [SlashCommand("teacherabsences", "Get all teacher absences!")]
    public async Task TeacherAbsencesCommand()
    {
-      await RespondAsync("Getting teacher-absences...");
+      await RespondAsync("# Teacher-absences:");
 
       var teacherAbsences = await _client!.GetTeacherAbsencesAsync();
 
-      await MessageHelper.SendListMessageAsync(
-            teacherAbsences,
-            Context,
-            e => $"- **{e.TeacherId}:** {e.Hour} {e.Date}\n",
-            "# Teacher Absences:\n");
+      if (teacherAbsences == null || teacherAbsences.Count == 0)
+         await ModifyOriginalResponseAsync(x => x.Content = "No absences found!");
+      else
+         await MessageHelper.SendListMessageAsync(
+               teacherAbsences,
+               Context,
+               e => $"- **{e.TeacherId}:** {e.Hour} {e.Date}\n");
    }
    
    [SlashCommand("statuses", "Get the status of each indy day in range!")]
    public async Task DayStatusesCommand(
          [Summary("month", "The month to get statuses for")] int month = -1)
    {
-      await RespondAsync("Getting statuses...");
+      await RespondAsync("# Statuses:");
 
       var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -89,11 +93,13 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
 
       var statuses = await _client!.GetDayStatusesAsync(startDate, endDate);
 
-      await MessageHelper.SendListMessageAsync(
-            statuses,
-            Context,
-            e => $"-  **{e.Date} {e.DayName}:** {e.Status.ToString()}\n",
-            "# Statuses:\n");
+      if (statuses == null || statuses.Count == 0)
+         await ModifyOriginalResponseAsync(x => x.Content = "No statuses found!");
+      else
+         await MessageHelper.SendListMessageAsync(
+               statuses,
+               Context,
+               e => $"-  **{e.Date} {e.DayName}:** {e.Status.ToString()}\n");
    }
 
    [SlashCommand("entries", "Get made entries for a specific date!")]
@@ -101,7 +107,7 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
             [Summary("date", "Date to get entries for!")]
             [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date)
    {
-      await RespondAsync($"Getting your entries for {date}...", ephemeral: true);
+      await DeferAsync();
 
       FullRetured fullRetured;
       List<DayStatus> statusList;
@@ -131,7 +137,11 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
          .Build();
 
       var buttons = BuildEntryButtons(hour3Disabled, hour4Disabled);
-      await ReplyAsync(embed: embed, components: buttons);
+      await ModifyOriginalResponseAsync(x =>
+            {
+               x.Embed = embed;
+               x.Components = buttons;
+            });
    }
 
    private Color GetColorForStatus(Status status)
