@@ -112,8 +112,7 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
       }
       catch (InvalidIndyDayException)
       {
-         await DeleteOriginalResponseAsync();
-         await RespondAsync($"[ERROR] {date} is not a valid IndY-Day!");
+         await ModifyOriginalResponseAsync(x => x.Content = $"**[ERROR]** {date} is not a valid IndY-Day!");
          throw;
       }
 
