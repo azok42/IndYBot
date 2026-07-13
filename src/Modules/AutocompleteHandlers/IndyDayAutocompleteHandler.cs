@@ -23,7 +23,7 @@ public class IndyDayAutocompleteHandler : AutocompleteHandler
          var suggestion = indyDays
             .Where(x => x.Date.ToString().Contains(input))
             .Distinct()
-            .Select(x => new AutocompleteResult($"{x.DayName} {x.Date.ToString()}", x.Date.ToString()))
+            .Select(x => new AutocompleteResult($"{x.Date.ToString()}", x.Date.ToString()))
             .Take(25);
 
          return AutocompletionResult.FromSuccess(suggestion);
