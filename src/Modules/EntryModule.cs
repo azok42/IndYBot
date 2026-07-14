@@ -44,7 +44,7 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
 
       [RequireLogin]
       [SlashCommand("normal", "Make a normal entry!")]
-      public async Task EntryCommand(
+      public async Task NormalEntryCommand(
                [Summary("date", "Date for the entry!")]
                [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
                [Summary("teacher", "Teacher where to make the entry!")]
@@ -78,7 +78,34 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
          if (!success) return;
 
          await ModifyOriginalResponseAsync(x => {
-                  x.Content = $"Successfully made entries for {entries.First().Date}";
+                  x.Content = $"Successfully made normal entries for {entries.First().Date}";
+                  x.Flags = MessageFlags.Ephemeral;
+               });
+      }
+
+      [RequireLogin]
+      [SlashCommand("absence", "Make a absence entry!")]
+      public async Task AbsenceEntryCommand(
+               [Summary("date", "Date for the entry!")]
+               [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
+               [Summary("hour", "The hour of the entry. Leave empty for both hours!")] GetterModule.Hour? hour = null)
+      {
+         await DeferAsync(ephemeral: true);
+
+         List<Absence> entries = new();
+
+         bool success = await TryMakeEntry(async () =>
+         {
+            if (hour == null)
+               entries = await _client!.MakeAbsenceEntryAsync(DateOnly.Parse(date));
+            else
+               entries.Add(await _client!.MakeAbsenceEntryAsync(DateOnly.Parse(date), (int) hour.Value));
+         });
+
+         if (!success) return;
+
+         await ModifyOriginalResponseAsync(x => {
+                  x.Content = $"Successfully made absence entries for {entries.First().Date}";
                   x.Flags = MessageFlags.Ephemeral;
                });
       }
