@@ -110,6 +110,44 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
                });
       }
 
+      [RequireLogin]
+      [SlashCommand("event", "Make a schoolevent entry!")]
+      public async Task SchooleventEntryCommand(
+               [Summary("date", "Date for the entry!")]
+               [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
+               [Summary("teacher", "Teacher where to make the entry!")]
+               [Autocomplete(typeof(TeacherAutocompleteHandler))] string teacherId,
+               [Summary("description", "Your description of the event!")] string description,
+               [Summary("hour", "The hour of the entry. Leave empty for both hours!")] GetterModule.Hour? hour = null)
+      {
+         await DeferAsync(ephemeral: true);
+
+         List<SchoolEvent> entries = new();
+
+         bool success = await TryMakeEntry(async () =>
+         {
+            if (hour == null)
+               entries = await _client!.MakeSchoolEventEntryAsync(
+                     DateOnly.Parse(date),
+                     teacherId,
+                     description);
+            else
+               entries.Add(await _client!.MakeSchoolEventEntryAsync(
+                        DateOnly.Parse(date),
+                        (int) hour.Value,
+                        teacherId,
+                        description));
+         });
+
+         if (!success) return;
+
+         await ModifyOriginalResponseAsync(x => {
+                  x.Content = $"Successfully made schoolevent entries for {entries.First().Date}";
+                  x.Flags = MessageFlags.Ephemeral;
+               });
+      }
+
+
       private async Task<bool> TryMakeEntry(Func<Task> action)
       {
          try {
