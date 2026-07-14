@@ -58,7 +58,8 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
 
          List<Normal> entries = new();
 
-         try {
+         bool success = await TryMakeEntry(async () =>
+         {
             if (hour == null)
                entries = await _client!.MakeNormalEntryAsync(
                      DateOnly.Parse(date),
@@ -72,38 +73,40 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
                         teacherId,
                         subject,
                         activity));
-         }
-         catch (NotFoundException)
-         {
-            await ModifyOriginalResponseAsync(x =>
-                  {
-                     x.Content = "No hour for this teacher on this day!";
-                     x.Flags = MessageFlags.Ephemeral;
-                  });
-            return;
-         }
-         catch (InvalidIndyDayException)
-         {
-            await ModifyOriginalResponseAsync(x =>
-                  {
-                     x.Content = "Not a valid IndY-Day!";
-                     x.Flags = MessageFlags.Ephemeral;
-                  });
-            return;
-         }
-         catch (Exception)
-         {
-            await ModifyOriginalResponseAsync(x =>
-                  {
-                     x.Content = "Something went wrong!";
-                     x.Flags = MessageFlags.Ephemeral;
-                  });
-         }
+         });
+
+         if (!success) return;
 
          await ModifyOriginalResponseAsync(x => {
                   x.Content = $"Successfully made entries for {entries.First().Date}";
                   x.Flags = MessageFlags.Ephemeral;
                });
+      }
+
+      private async Task<bool> TryMakeEntry(Func<Task> action)
+      {
+         try {
+            await action();
+            return true;
+         }
+         catch (NotFoundException)
+         {
+            await ModifyOriginalResponseAsync(x => x.Content = "No hour for this teacher on this day!");
+
+            return false;
+         }
+         catch (InvalidIndyDayException)
+         {
+            await ModifyOriginalResponseAsync(x => x.Content = "Not a valid IndY-Day!");
+
+            return false;
+         }
+         catch (Exception)
+         {
+            await ModifyOriginalResponseAsync(x => x.Content = "Something went wrong!");
+
+            return false;
+         }
       }
    }
 }
