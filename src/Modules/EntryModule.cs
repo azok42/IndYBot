@@ -54,7 +54,7 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
                [Summary("activity", "Your activity of the entry!")] string activity,
                [Summary("hour", "The hour of the entry. Leave empty for both hours!")] GetterModule.Hour? hour = null)
       {
-         await DeferAsync();
+         await DeferAsync(ephemeral: true);
 
          List<Normal> entries = new();
 
