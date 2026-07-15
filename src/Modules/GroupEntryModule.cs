@@ -3,6 +3,7 @@ using Discord.Interactions;
 using IndYBot.Modules.Preconditions;
 using IndYBot.Modules.AutocompleteHandlers;
 using IndYBot.Modules.Services;
+using IndYBot.Modules.Modals;
 using IndYLib.Interfaces;
 
 namespace IndYBot.Modules;
@@ -76,9 +77,14 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
 
       _quickEntryService.PendingEntries.TryAdd(entryToken, entryData);
 
-      var component = new ComponentBuilder()
-         .WithButton("Make entry", $"quickentry:{entryToken}", ButtonStyle.Success)
-         .Build();
+      ComponentBuilder component = new ComponentBuilder();
+
+      if (string.IsNullOrEmpty(description))
+         component = component.WithButton("Make entry", $"add_description:{entryToken}", ButtonStyle.Success);
+      else
+         component = component
+            .WithButton("Make entry", $"quickentry:{entryToken}", ButtonStyle.Success)
+            .WithButton("Make entry with new description", $"add_description:{entryToken}", ButtonStyle.Primary);
 
       var fields = new List<EmbedFieldBuilder>();
 
@@ -101,7 +107,7 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
       await ModifyOriginalResponseAsync(x => 
             {
                x.Embed = embed.Build();
-               x.Components = component;
+               x.Components = component.Build();
             });
    }
 
@@ -139,6 +145,38 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
          .WithName("Options");
 
       return builder;
+   }
+
+   [ComponentInteraction("add_description:*")]
+   public async Task HandleAddDescriptionButton(string tokenString)
+   {
+      if (!Guid.TryParse(tokenString, out var token) || !_quickEntryService.PendingEntries.ContainsKey(token))
+      {
+         await RespondAsync("The quick entry expired or is invalid!", ephemeral: true);
+         return;
+      }
+
+      await RespondWithModalAsync<AddDescriptionModal>($"add_description_modal:{tokenString}");
+   }
+
+   [ModalInteraction("add_description_modal:*")]
+   public async Task HandleAddDescriptionModal(string tokenString, AddDescriptionModal modal)
+   {
+      if (string.IsNullOrEmpty(modal.DescriptionInput))
+      {
+         await RespondAsync("Description is null", ephemeral: true);
+         return;
+      }
+
+      if (!Guid.TryParse(tokenString, out var token) || !_quickEntryService.PendingEntries.TryGetValue(token, out var entry))
+      {
+         await RespondAsync("The quick entry expired or is invalid!", ephemeral: true);
+         return;
+      }
+
+      entry.Description = modal.DescriptionInput;
+
+      await HandleQuickEntry(tokenString);
    }
 
    [ComponentInteraction("quickentry:*")]
