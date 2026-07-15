@@ -10,7 +10,7 @@ public class SaveLoginModal : IModal
    public string SaveInfo { get; set; } = "You don't *need* to save your password if you don't want, but you still need to write it at logins!";
 
    [ModalTextDisplay]
-   public string PasswordInfo { get; set; } = "Your password is going to be saved in **plaintext!!** So not think it's safe!";
+   public string PasswordInfo { get; set; } = "Your password is going to be saved in **plaintext!!** So don't think it's safe!";
 
    [RequiredInput(true)]
    [InputLabel("Username", "Your IndY-Username")]
