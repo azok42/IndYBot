@@ -80,19 +80,23 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
          .WithButton("Make entry", $"quickentry:{entryToken}", ButtonStyle.Success)
          .Build();
 
-      var fieldBuilder = MakeFieldBuilderFromEntry(entryData);
+      var fields = new List<EmbedFieldBuilder>();
+
+      if (!string.IsNullOrEmpty(reason))
+      {
+         var reasonFieldBuilder = new EmbedFieldBuilder().WithName("Reason").WithValue(reason);
+         fields.Add(reasonFieldBuilder);
+      }
+
+      var optionsFieldBuilder = MakeFieldBuilderFromEntry(entryData);
+      fields.Add(optionsFieldBuilder);
 
       var embed = new EmbedBuilder()
          .WithTitle($"{type.ToString()} group entry for {date}!")
          .WithAuthor(new EmbedAuthorBuilder().WithName(Context.Interaction.User.Username))
-         .WithColor(color);
-
-      if (!string.IsNullOrEmpty(reason))
-         embed = embed.AddField("Reason", reason);
-
-      embed = embed
+         .WithColor(color)
          .WithDescription("You can quickly make an entry with the following\noptions using the buttons below!")
-         .WithFields(new List<EmbedFieldBuilder> { fieldBuilder });
+         .WithFields(fields);
 
       await ModifyOriginalResponseAsync(x => 
             {
