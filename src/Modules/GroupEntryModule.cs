@@ -46,7 +46,8 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
             "description",
             "A description of the group entry! Leave empty to let users choose. Ignored for absence entries.")]
          string description = "",
-         [Summary("hour", "The hour of your group entry. Leave empty for both hours!")] GetterModule.Hour? hour = null)
+         [Summary("hour", "The hour of your group entry. Leave empty for both hours!")] GetterModule.Hour? hour = null,
+         [Summary("reason", "Why was this entry made! Leave empty for none.")] string reason = "")
    {
       await DeferAsync();
 
@@ -84,14 +85,18 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
       var embed = new EmbedBuilder()
          .WithTitle($"{type.ToString()} group entry for {date}!")
          .WithAuthor(new EmbedAuthorBuilder().WithName(Context.Interaction.User.Username))
-         .WithColor(color)
+         .WithColor(color);
+
+      if (!string.IsNullOrEmpty(reason))
+         embed = embed.AddField("Reason", reason);
+
+      embed = embed
          .WithDescription("You can quickly make an entry with the following\noptions using the buttons below!")
-         .WithFields(new List<EmbedFieldBuilder> { fieldBuilder })
-         .Build();
+         .WithFields(new List<EmbedFieldBuilder> { fieldBuilder });
 
       await ModifyOriginalResponseAsync(x => 
             {
-               x.Embed = embed;
+               x.Embed = embed.Build();
                x.Components = component;
             });
    }
