@@ -144,7 +144,7 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
    [ComponentInteraction("quickentry:*")]
    public async Task HandleQuickEntry(string tokenString)
    {
-      if (!Guid.TryParse(tokenString, out var token) || !_quickEntryService.PendingEntries.TryRemove(token, out var entry))
+      if (!Guid.TryParse(tokenString, out var token) || !_quickEntryService.PendingEntries.TryGetValue(token, out var entry))
       {
          await RespondAsync("The quick entry expired or is invalid!", ephemeral: true);
          return;
