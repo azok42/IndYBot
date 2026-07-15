@@ -26,6 +26,7 @@ class Bot
          .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
          .AddSingleton<InteractionHandler>()
          .AddSingleton<LoginService>()
+         .AddSingleton<QuickEntryService>()
          .AddSingleton<SQLHelper>(x => new SQLHelper(File.ReadAllText("sql/connection").Trim()))
          .AddIndyAuth()
          .BuildServiceProvider();
