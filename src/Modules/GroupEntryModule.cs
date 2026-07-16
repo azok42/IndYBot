@@ -5,6 +5,7 @@ using IndYBot.Modules.AutocompleteHandlers;
 using IndYBot.Modules.Services;
 using IndYBot.Modules.Modals;
 using IndYLib.Interfaces;
+using IndYLib.Exceptions;
 
 namespace IndYBot.Modules;
 
@@ -152,7 +153,7 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
    {
       if (!Guid.TryParse(tokenString, out var token) || !_quickEntryService.PendingEntries.ContainsKey(token))
       {
-         await RespondAsync("The quick entry expired or is invalid!", ephemeral: true);
+         await FollowupAsync("The quick entry expired or is invalid!", ephemeral: true);
          return;
       }
 
@@ -164,13 +165,13 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
    {
       if (string.IsNullOrEmpty(modal.DescriptionInput))
       {
-         await RespondAsync("Description is null", ephemeral: true);
+         await FollowupAsync("Description is null!", ephemeral: true);
          return;
       }
 
       if (!Guid.TryParse(tokenString, out var token) || !_quickEntryService.PendingEntries.TryGetValue(token, out var entry))
       {
-         await RespondAsync("The quick entry expired or is invalid!", ephemeral: true);
+         await FollowupAsync("The quick entry expired or is invalid!", ephemeral: true);
          return;
       }
 
@@ -182,12 +183,85 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
    [ComponentInteraction("quickentry:*")]
    public async Task HandleQuickEntry(string tokenString)
    {
+      await DeferAsync(ephemeral: true);
+
       if (!Guid.TryParse(tokenString, out var token) || !_quickEntryService.PendingEntries.TryGetValue(token, out var entry))
       {
-         await RespondAsync("The quick entry expired or is invalid!", ephemeral: true);
+         await FollowupAsync("The quick entry expired or is invalid!", ephemeral: true);
          return;
       }
 
-      await RespondAsync("works (holy shit)", ephemeral: true);
+      var success = await MakeQuickEntry(entry);
+
+      if (success)
+         await FollowupAsync($"Successfully made entry for date {entry.Date}", ephemeral: true);
+   }
+
+   private async Task<bool> MakeQuickEntry(QuickEntry entry)
+   {
+      if (DateOnly.TryParse(entry.Date, out var date))
+      {
+         await FollowupAsync("Date parameter is not a valid IndY-Day!", ephemeral: true);
+         return false;
+      }
+
+      switch (entry.Type)
+      {
+         case EntryType.Normal:
+            return await TryMakeEntry(async () =>
+                  {
+                     if (entry.Hour == null)
+                        await _client!.MakeNormalEntryAsync(date, entry.TeacherId, entry.Subject, entry.Description);
+                     else
+                        await _client!.MakeNormalEntryAsync(date, (int) entry.Hour, entry.TeacherId, entry.Subject, entry.Description);
+                  });
+
+         case EntryType.Absence:
+            return await TryMakeEntry(async () =>
+                  {
+                     if (entry.Hour == null)
+                        await _client!.MakeAbsenceEntryAsync(date);
+                     else
+                        await _client!.MakeAbsenceEntryAsync(date, (int) entry.Hour);
+                  });
+
+         case EntryType.Schoolevent:
+            return await TryMakeEntry(async () =>
+                  {
+                     if (entry.Hour == null)
+                        await _client!.MakeSchoolEventEntryAsync(date, entry.TeacherId, entry.Description);
+                     else
+                        await _client!.MakeSchoolEventEntryAsync(date, (int) entry.Hour, entry.Subject, entry.Description);
+                  });
+
+         default:
+            throw new Exception("Type not recognised!");
+      }
+   }
+
+   private async Task<bool> TryMakeEntry(Func<Task> action)
+   {
+      try {
+         await action();
+         return true;
+      }
+      catch (NotFoundException)
+      {
+         await FollowupAsync("No hour for this teacher on this day!", ephemeral: true);
+
+         return false;
+      }
+      catch (InvalidIndyDayException)
+      {
+         await FollowupAsync("Not a valid IndY-Day!", ephemeral: true);
+
+         return false;
+      }
+      catch (Exception)
+      {
+         await FollowupAsync("Something went wrong!", ephemeral: true);
+
+         return false;
+      }
    }
 }
