@@ -44,9 +44,18 @@ public class EntryStandardsModule : InteractionModuleBase<SocketInteractionConte
    }
 
    [SlashCommand("set", "Sets a standard for your user!")]
-   public async Task SetStandardsCommand()
+   public async Task SetStandardsCommand(
+         [Summary("standard", "The standard you want to set or change!")] Standards type,
+         [Summary("value", "The wanted value for the standard!")] string value)
    {
+      await DeferAsync(ephemeral: true);
 
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "INSERT INTO user_standard (id, type, value) VALUES (@Id, @Type, @VALUE) ON DUPLICATE KEY UPDATE value=@VALUE;";
+      await con.QueryAsync(sql, new { Id = UserId, Type = type.ToString(), Value = value });
+
+      await ModifyOriginalResponseAsync(x => x.Content = $"Successfully set standard '{type.GetChoiceDisplay()}' to value '{value}'");
    }
 
    [SlashCommand("remove", "Remove a standard from the database!")]
