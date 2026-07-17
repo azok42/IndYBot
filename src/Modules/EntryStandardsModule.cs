@@ -42,4 +42,22 @@ public class EntryStandardsModule : InteractionModuleBase<SocketInteractionConte
 
       await ModifyOriginalResponseAsync(x => x.Content = response);
    }
+
+   [SlashCommand("set", "Sets a standard for your user!")]
+   public async Task SetStandardsCommand()
+   {
+
+   }
+
+   [SlashCommand("remove", "Remove a standard from the database!")]
+   public async Task RemoveStandardsCommand()
+   {
+
+   }
+
+   [SlashCommand("drop", "Remove all of your standards from the database!")]
+   public async Task DropStandardsCommand()
+   {
+
+   }
 }
