@@ -1,8 +1,40 @@
 using Discord.Interactions;
 using IndYBot.Helpers;
+using IndYBot.Extensions;
 using Dapper;
 
 namespace IndYBot.Modules;
+
+public enum Standards
+{
+   [ChoiceDisplay("Global Teacher")]
+   GlobalTeacher,
+   [ChoiceDisplay("Global Subject")]
+   GlobalSubject,
+   [ChoiceDisplay("Global Description")]
+   GlobalDescription,
+
+   [ChoiceDisplay("Monday Teacher")]
+   MondayTeacher,
+   [ChoiceDisplay("Monday Subject")]
+   MondaySubject,
+   [ChoiceDisplay("Monday Description")]
+   MondayDescription,
+
+   [ChoiceDisplay("Wendsday Teacher")]
+   WendsdayTeacher,
+   [ChoiceDisplay("Wendsday Subject")]
+   WendsdaySubject,
+   [ChoiceDisplay("Wendsday Description")]
+   WendsdayDescription,
+
+   [ChoiceDisplay("Friday Teacher")]
+   FridayTeacher,
+   [ChoiceDisplay("Friday Subject")]
+   FridaySubject,
+   [ChoiceDisplay("Friday Description")]
+   FridayDescription,
+}
 
 [Group("standard", "Commands for interacting with user-defined standa")]
 public class EntryStandardsModule : InteractionModuleBase<SocketInteractionContext>
