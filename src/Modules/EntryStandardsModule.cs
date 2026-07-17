@@ -72,9 +72,16 @@ public class EntryStandardsModule : InteractionModuleBase<SocketInteractionConte
       await ModifyOriginalResponseAsync(x => x.Content = $"Successfully delete standard '{type.GetChoiceDisplay()}'");
    }
 
-   [SlashCommand("drop", "Remove all of your standards from the database!")]
+   [SlashCommand("removeall", "Remove all of your standards from the database!")]
    public async Task DropStandardsCommand()
    {
+      await DeferAsync(ephemeral: true);
 
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "DELETE FROM user_standard WHERE id = @Id;";
+      await con.QueryAsync(sql, new { Id = UserId });
+
+      await ModifyOriginalResponseAsync(x => x.Content = $"Successfully deleted all standards for your user!");
    }
 }
