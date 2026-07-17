@@ -10,3 +10,11 @@ CREATE TABLE IF NOT EXISTS user (
    name VARCHAR(50) NOT NULL,
    password VARCHAR(50)
 );
+
+CREATE TABLE IF NOT EXISTS user_standard (
+   id BIGINT,
+   type VARCHAR(30),
+   value VARCHAR(100) NOT NULL,
+
+   PRIMARY KEY(id, type)
+);
