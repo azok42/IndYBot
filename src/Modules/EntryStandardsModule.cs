@@ -69,7 +69,7 @@ public class EntryStandardsModule : InteractionModuleBase<SocketInteractionConte
          return;
       }
 
-      var lines = standards.Select(s => $"- **{s.type}:** {s.value}\n");
+      var lines = standards.Select(s => $"- **{Enum.Parse<Standards>((string) s.type).GetChoiceDisplay()}:** {s.value}");
       var response = string.Join("\n", lines);
 
       await ModifyOriginalResponseAsync(x => x.Content = response);
