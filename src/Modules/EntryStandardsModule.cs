@@ -7,6 +7,8 @@ namespace IndYBot.Modules;
 
 public enum Standards
 {
+   [ChoiceDisplay("Global Entry Type")]
+   GlobalType,
    [ChoiceDisplay("Global Teacher")]
    GlobalTeacher,
    [ChoiceDisplay("Global Subject")]
@@ -14,6 +16,8 @@ public enum Standards
    [ChoiceDisplay("Global Description")]
    GlobalDescription,
 
+   [ChoiceDisplay("Monday Entry Type")]
+   MondayType,
    [ChoiceDisplay("Monday Teacher")]
    MondayTeacher,
    [ChoiceDisplay("Monday Subject")]
@@ -21,6 +25,8 @@ public enum Standards
    [ChoiceDisplay("Monday Description")]
    MondayDescription,
 
+   [ChoiceDisplay("Wendsday Entry Type")]
+   WendsdayType,
    [ChoiceDisplay("Wendsday Teacher")]
    WendsdayTeacher,
    [ChoiceDisplay("Wendsday Subject")]
@@ -28,6 +34,8 @@ public enum Standards
    [ChoiceDisplay("Wendsday Description")]
    WendsdayDescription,
 
+   [ChoiceDisplay("Friday Entry Type")]
+   FridayType,
    [ChoiceDisplay("Friday Teacher")]
    FridayTeacher,
    [ChoiceDisplay("Friday Subject")]
