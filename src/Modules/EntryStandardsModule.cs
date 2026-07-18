@@ -25,13 +25,13 @@ public enum Standards
    [ChoiceDisplay("Monday Description")]
    MonDescription,
 
-   [ChoiceDisplay("Wendsday Entry Type")]
+   [ChoiceDisplay("Wednesday Entry Type")]
    WedType,
-   [ChoiceDisplay("Wendsday Teacher")]
+   [ChoiceDisplay("Wednesday Teacher")]
    WedTeacher,
-   [ChoiceDisplay("Wendsday Subject")]
+   [ChoiceDisplay("Wednesday Subject")]
    WedSubject,
-   [ChoiceDisplay("Wendsday Description")]
+   [ChoiceDisplay("Wednesday Description")]
    WedDescription,
 
    [ChoiceDisplay("Friday Entry Type")]
