@@ -64,7 +64,7 @@ public class EntryStandardsModule : InteractionModuleBase<SocketInteractionConte
    [SlashCommand("info", "Get basic info about standards!")]
    public async Task StandardInfoCommand()
    {
-      await RespondAsync("# Standards\nYou can set standards to make entry making easier and faster!\nGlobal standards are for everyday and day-specific are onl for this day! However you can always override some specific options when making the entry!\n**Also**, you can make options hour specific with an * to seperate it: GlobalDescription = hour1*hour2", ephemeral: true);
+      await RespondAsync("# Standards\nYou can set standards to make entry making easier and faster!\nGlobal standards are for everyday and day-specific are onl for this day! However you can always override some specific options when making the entry!\n", ephemeral: true);
    }
 
    [SlashCommand("list", "List all set standards!")]
