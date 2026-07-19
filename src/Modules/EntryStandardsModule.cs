@@ -17,31 +17,31 @@ public enum Standards
    GlobalDescription,
 
    [ChoiceDisplay("Monday Entry Type")]
-   MonType,
+   MoType,
    [ChoiceDisplay("Monday Teacher")]
-   MonTeacher,
+   MoTeacher,
    [ChoiceDisplay("Monday Subject")]
-   MonSubject,
+   MoSubject,
    [ChoiceDisplay("Monday Description")]
-   MonDescription,
+   MoDescription,
 
    [ChoiceDisplay("Wednesday Entry Type")]
-   WedType,
+   MiType,
    [ChoiceDisplay("Wednesday Teacher")]
-   WedTeacher,
+   MiTeacher,
    [ChoiceDisplay("Wednesday Subject")]
-   WedSubject,
+   MiSubject,
    [ChoiceDisplay("Wednesday Description")]
-   WedDescription,
+   MiDescription,
 
    [ChoiceDisplay("Friday Entry Type")]
-   FriType,
+   FrType,
    [ChoiceDisplay("Friday Teacher")]
-   FriTeacher,
+   FrTeacher,
    [ChoiceDisplay("Friday Subject")]
-   FriSubject,
+   FrSubject,
    [ChoiceDisplay("Friday Description")]
-   FriDescription,
+   FrDescription,
 }
 
 [Group("standard", "Commands for interacting with user-defined standa")]
