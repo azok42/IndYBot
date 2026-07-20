@@ -7,8 +7,6 @@ namespace IndYBot.Modules;
 
 public enum Standards
 {
-   [ChoiceDisplay("Global Entry Type")]
-   GlobalType,
    [ChoiceDisplay("Global Teacher")]
    GlobalTeacher,
    [ChoiceDisplay("Global Subject")]
@@ -16,32 +14,26 @@ public enum Standards
    [ChoiceDisplay("Global Description")]
    GlobalDescription,
 
-   [ChoiceDisplay("Monday Entry Type")]
-   MoType,
    [ChoiceDisplay("Monday Teacher")]
-   MoTeacher,
+   MondayTeacher,
    [ChoiceDisplay("Monday Subject")]
-   MoSubject,
+   MondaySubject,
    [ChoiceDisplay("Monday Description")]
-   MoDescription,
+   MondayDescription,
 
-   [ChoiceDisplay("Wednesday Entry Type")]
-   MiType,
    [ChoiceDisplay("Wednesday Teacher")]
-   MiTeacher,
+   WednesdayTeacher,
    [ChoiceDisplay("Wednesday Subject")]
-   MiSubject,
+   WednesdaySubject,
    [ChoiceDisplay("Wednesday Description")]
-   MiDescription,
+   WednesdayDescription,
 
-   [ChoiceDisplay("Friday Entry Type")]
-   FrType,
    [ChoiceDisplay("Friday Teacher")]
-   FrTeacher,
+   FridayTeacher,
    [ChoiceDisplay("Friday Subject")]
-   FrSubject,
+   FridaySubject,
    [ChoiceDisplay("Friday Description")]
-   FrDescription,
+   FridayDescription,
 }
 
 [Group("standard", "Commands for interacting with user-defined standa")]
