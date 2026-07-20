@@ -1,11 +1,13 @@
 using Discord;
 using Discord.Interactions;
 using IndYBot.Modules.Services;
+using IndYBot.Helpers;
 using IndYBot.Modules.Preconditions;
 using IndYBot.Modules.AutocompleteHandlers;
 using IndYLib.Interfaces;
 using IndYLib.Exceptions;
 using IndYLib.Models.Entry;
+using Dapper;
 
 namespace IndYBot.Modules;
 
@@ -13,12 +15,14 @@ namespace IndYBot.Modules;
 public class EntryModule : InteractionModuleBase<SocketInteractionContext>
 {
    private readonly LoginService _loginService;
+   private readonly SQLHelper _sqlHelper;
 
    private IIndyClient? _client = null;
 
-   public EntryModule(LoginService loginService)
+   public EntryModule(LoginService loginService, SQLHelper sqlHelper)
    {
       _loginService = loginService;
+      _sqlHelper = sqlHelper;
    }
 
    public override void BeforeExecute(ICommandInfo command)
@@ -131,6 +135,65 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
             });
    }
 
+   [RequireLogin]
+   [SlashCommand("standard", "Make a normal entry with options from your standards!")]
+   public async Task StandardEntryCommand(
+         [Summary("date", "The date of your entry!")]
+         [Autocomplete(typeof(IndyDayAutocompleteHandler))] string date,
+         [Summary("teacher", "Teacher where to make the entry! Used to override standard!")]
+         [Autocomplete(typeof(TeacherAutocompleteHandler))] string? teacherId = null,
+         [Summary("subject", "The subject of the entry! Used to override standard!")]
+         [Autocomplete(typeof(SubjectAutocompleteHandler))] string? subject = null,
+         [Summary("description", "Your description of the entry! Used to override standard!")] string? description = null)
+   {
+      await DeferAsync(ephemeral: true);
+
+      var parsedDate = DateOnly.Parse(date);   
+      var userId = Context.Interaction.User.Id;
+
+      var con = _sqlHelper.CreateConnection();
+      var sql = "SELECT type, value FROM user_standard WHERE id = @Id;";
+      var queryResult = await con.QueryAsync<(string Type, string Value)>(sql, new { Id = userId });
+
+      var standards = queryResult.ToDictionary(x => x.Type, x => x.Value);
+      string dayName = parsedDate.DayOfWeek.ToString();
+
+      string? GetStandardValue(string standard)
+      {
+         if (standards.TryGetValue($"{dayName}{standard}", out var dayValue)) return dayValue;
+         if (standards.TryGetValue($"Global{standard}", out var globalValue)) return globalValue;
+         return null;
+      }
+
+      var finalTeacher = !string.IsNullOrEmpty(teacherId) ? teacherId : GetStandardValue("Teacher");
+      var finalSubject = !string.IsNullOrEmpty(subject) ? subject : GetStandardValue("Subject");
+      var finalDescription = !string.IsNullOrEmpty(description) ? description : GetStandardValue("Description");
+
+      if (
+            string.IsNullOrEmpty(finalTeacher) ||
+            string.IsNullOrEmpty(finalSubject) || 
+            string.IsNullOrEmpty(finalDescription))
+      {
+         await ModifyOriginalResponseAsync(x => x.Content = $"Could not find all standards! Please provide either missing parameters now or add standards for them using the '/standard set' command!");
+         return;
+      }
+
+      List<Normal> entries = new();
+
+      bool success = await TryMakeEntry(async () =>
+      {
+         entries = await _client!.MakeNormalEntryAsync(
+               parsedDate,
+               finalTeacher,
+               finalSubject,
+               finalDescription);
+      });
+
+      if (!success)
+         return;
+
+      await ModifyOriginalResponseAsync(x => x.Content = $"Successfully made entry for date {date}");
+   }
 
    private async Task<bool> TryMakeEntry(Func<Task> action)
    {
