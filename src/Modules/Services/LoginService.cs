@@ -7,7 +7,7 @@ public class ClientSession
 {
    public IIndyClient Client { get; set; }
    
-   public DateTime RefreshTime { get; set;}
+   public DateTime RefreshTime { get; set; }
 
    public ClientSession(IIndyClient Client, DateTime RefreshTime)
    {
