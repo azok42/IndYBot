@@ -5,7 +5,7 @@ namespace IndYBot.Modules.Services;
 
 public class ClientSession
 {
-   public IIndyClient Client { get; set;}
+   public IIndyClient Client { get; set; }
    
    public DateTime RefreshTime { get; set;}
 
