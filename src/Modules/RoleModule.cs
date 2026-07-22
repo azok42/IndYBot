@@ -21,6 +21,34 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
       await RespondAsync($"Successfully created role: {name}", ephemeral: true);
    }
 
+   [SlashCommand("list_groups", "List all groups a user is in!")]
+   public async Task ListGroupsCommand(
+         [Summary("user", "The user to join!")] IUser user)
+   {
+      await RespondAsync($"# Groups for user {user.Mention}\n");
+
+      var guildUser = (IGuildUser) user;
+      if (guildUser == null)
+      {
+         await RespondAsync("Error at user handling!", ephemeral: true);
+         return;
+      }
+
+      var roles = guildUser.RoleIds;
+      
+      await MessageHelper.SendListMessageAsync(
+            roles.ToList(),
+            Context,
+            roleId => {
+               var role = Context.Guild.GetRole(roleId);
+
+               if (role.Name.EndsWith("_group"))
+                  return $"- **{role.Name}**\n";
+
+               return "";
+            });
+   }
+
    [SlashCommand("add_user", "Add a user to a group!")]
    public async Task AddUserToGroup(
          [Summary("role", "The role to join!")] IRole role,
