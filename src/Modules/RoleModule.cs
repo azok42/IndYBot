@@ -6,12 +6,14 @@ namespace IndYBot.Modules;
 [Group("role", "Manage roles")]
 public class RoleModule : InteractionModuleBase<SocketInteractionContext> 
 {
-   [SlashCommand("grouprole", "Create a role used for groups!")]
+   [SlashCommand("grouprole", "Create a group role! (*name*_group)")]
    public async Task CreateGroupRoleCommand(
          [Summary("name", "Set the name of the role!")] string name,
          [Summary("color", "Set the color of the role!")] string color)
    {
-      var role = await Context.Guild.CreateRoleAsync(name, color: Color.Parse(color), isHoisted: false, isMentionable: true);
+      var roleName = name + "_group";
+
+      var role = await Context.Guild.CreateRoleAsync(roleName, color: Color.Parse(color), isHoisted: false, isMentionable: true);
       var user = (IGuildUser) Context.User;
 
       await user.AddRoleAsync(role.Id);
