@@ -14,7 +14,7 @@ public class MessageHelper
 
          if (msg.Count() + tmpMsg.Count() >= 2000)
          {
-            await context.Channel.SendMessageAsync(msg);
+            await context.Interaction.FollowupAsync(msg);
             msg = tmpMsg;
             sendExtraMsg = false;
          }
@@ -26,6 +26,6 @@ public class MessageHelper
       }
 
       if (sendExtraMsg)
-         await context.Channel.SendMessageAsync(msg);
+         await context.Interaction.FollowupAsync(msg);
    }
 }
