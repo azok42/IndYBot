@@ -43,7 +43,7 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
                var role = Context.Guild.GetRole(roleId);
 
                if (role.Name.EndsWith("_group"))
-                  return $"- **{role.Name}**\n";
+                  return $"- **{role.Name.Replace("_group", "")}**\n";
 
                return "";
             });
