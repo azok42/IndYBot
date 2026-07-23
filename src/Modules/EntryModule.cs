@@ -154,10 +154,9 @@ public class EntryModule : InteractionModuleBase<SocketInteractionContext>
       var con = _sqlHelper.CreateConnection();
       var sql = "SELECT type, value FROM user_standard WHERE id = @Id;";
       var queryResult = await con.QueryAsync<(string Type, string Value)>(sql, new { Id = userId });
-
       var standards = queryResult.ToDictionary(x => x.Type, x => x.Value);
-      string dayName = parsedDate.DayOfWeek.ToString();
 
+      string dayName = parsedDate.DayOfWeek.ToString();
       string? GetStandardValue(string standard)
       {
          if (standards.TryGetValue($"{dayName}{standard}", out var dayValue)) return dayValue;
