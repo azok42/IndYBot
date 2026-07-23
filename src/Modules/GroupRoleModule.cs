@@ -5,7 +5,7 @@ using IndYBot.Helpers;
 namespace IndYBot.Modules;
 
 [Group("role", "Manage roles")]
-public class RoleModule : InteractionModuleBase<SocketInteractionContext> 
+public class GroupRoleModule : InteractionModuleBase<SocketInteractionContext> 
 {
    [SlashCommand("grouprole", "Create a group role! (*name*_group)")]
    public async Task CreateGroupRoleCommand(
