@@ -49,7 +49,8 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
             "A description of the group entry! Leave empty to let users choose. Ignored for absence entries.")]
          string description = "",
          [Summary("hour", "The hour of your group entry. Leave empty for both hours!")] GetterModule.Hour? hour = null,
-         [Summary("reason", "Why was this entry made! Leave empty for none.")] string reason = "")
+         [Summary("reason", "Why was this entry made? Leave empty for none.")] string reason = "",
+         [Summary("role", "Optional role to ping!")] IRole? role = null)
    {
       await DeferAsync();
 
@@ -109,6 +110,12 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
             {
                x.Embed = embed.Build();
                x.Components = component.Build();
+
+               if (role == null)
+                  return;
+
+               x.Content = role.Mention;
+               x.AllowedMentions = AllowedMentions.All;
             });
    }
 
