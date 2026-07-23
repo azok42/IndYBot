@@ -66,4 +66,19 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
 
       await RespondAsync($"Successfully add user {user} to role {role.Name}", ephemeral: true);
    }
+
+   [SlashCommand("delete_group", "Deletes a group role!")]
+   public async Task RemoveRoleCommand(
+         [Summary("role", "The role to join!")] IRole role)
+   {
+      if (role.Name.EndsWith("_group"))
+      {
+         await role.DeleteAsync();
+         await RespondAsync($"Successfully deleted role: {role.Name.Replace("_group", "")}");
+
+         return;
+      }
+
+      await RespondAsync("Role is not a group!");
+   }
 }
