@@ -68,7 +68,7 @@ public class AutoEntryModule : InteractionModuleBase<SocketInteractionContext>
 
    [SlashCommand("set", "Sets a time where automatic entries will be made!")]
    public async Task SetCommand(
-         [Summary("time", "The time of the entry making!")] DateTime time)
+         [Summary("time", "The time of the entry making! Format: 'HH:MM'")] DateTime time)
    {
       await DeferAsync(ephemeral: true);
 
