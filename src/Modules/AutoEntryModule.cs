@@ -78,4 +78,26 @@ public class AutoEntryModule : InteractionModuleBase<SocketInteractionContext>
 
       await ModifyOriginalResponseAsync(x => x.Content = $"Successfully set auto-entry time to {time.ToString("HH:mm")}");
    }
+
+   [SlashCommand("status", "Get the status of your automatic entry!")]
+   public async Task StatusCommand()
+   {
+      await DeferAsync(ephemeral: true);
+
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "SELECT time, status FROM auto_entry WHERE id = @Id;";
+      var autoEntry = await con.QueryFirstOrDefaultAsync(sql, new { Id = Context.Interaction.User.Id });
+
+      if (autoEntry == null)
+      {
+         await ModifyOriginalResponseAsync(x => x.Content = $"You don't have an automatic entry set!");
+         return;
+      }
+
+      var time = (TimeSpan) autoEntry.time;
+      var status = Enum.Parse<AutoEntryStatus>((string) autoEntry.status);
+
+      await ModifyOriginalResponseAsync(x => x.Content = $"Your automatic entry happens at {time.ToString(@"hh\:mm")} and has status: {status}");
+   }
 }
