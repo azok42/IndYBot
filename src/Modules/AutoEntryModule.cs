@@ -65,4 +65,17 @@ public class AutoEntryModule : InteractionModuleBase<SocketInteractionContext>
 
       await ModifyOriginalResponseAsync(x => x.Content = $"Successfully toggled automatic entries from {statusString} to {newStatus.ToString()}!");
    }
+
+   [SlashCommand("set", "Sets a time where automatic entries will be made!")]
+   public async Task SetCommand(
+         [Summary("time", "The time of the entry making!")] DateTime time)
+   {
+      await DeferAsync(ephemeral: true);
+
+      var con = _sqlHelper.CreateConnection();
+      var sql = "INSERT INTO auto_entry (id, time, status) VALUES (@Id, @Time, 'Disabled') ON DUPLICATE KEY UPDATE time=@Time, status='Disabled';";
+      await con.QueryAsync(sql, new { Id = Context.Interaction.User.Id, Time = time.TimeOfDay });
+
+      await ModifyOriginalResponseAsync(x => x.Content = $"Successfully set auto-entry time to {time.ToString("HH:mm")}");
+   }
 }
