@@ -18,3 +18,11 @@ CREATE TABLE IF NOT EXISTS user_standard (
 
    PRIMARY KEY(id, type)
 );
+
+CREATE TABLE IF NOT EXISTS auto_entry (
+   id BIGINT PRIMARY KEY,
+   time TIME NOT NULL,
+   status VARCHAR(30) NOT NULL,
+
+   FOREIGN KEY(id) REFERENCES user(id)
+);
