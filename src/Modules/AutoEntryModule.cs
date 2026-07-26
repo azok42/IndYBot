@@ -100,4 +100,21 @@ public class AutoEntryModule : InteractionModuleBase<SocketInteractionContext>
 
       await ModifyOriginalResponseAsync(x => x.Content = $"Your automatic entry happens at {time.ToString(@"hh\:mm")} and has status: {status}");
    }
+
+   [SlashCommand("info", "Get info about automatic entries!")]
+   public async Task InfoCommand()
+   {
+      var msg = """
+         # Automatic entries
+         If you set a time with '/autoentry set', an entry will be made on Sunday, Tuesday and Thursday on that time.
+         You also have to make all standards with '/standard set', because these values will be used to make the entry.
+
+         **Note**: Automatic entries will be processed every 10 minutes. So 23:04 => 23:10!
+
+         In case an entry failed, maybe because of invalid values set in standards, its status is going to be 'Failed'.
+         If that happens you need to find the error and enable it again with '/autoentry toggle'!
+         """;
+
+      await RespondAsync(msg, ephemeral: true);
+   }
 }
