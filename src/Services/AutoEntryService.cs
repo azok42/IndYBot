@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Hosting;
 using IndYLib.Interfaces;
+using IndYLib.Exceptions;
 using IndYBot.Helpers;
 using Dapper;
 
@@ -60,7 +61,7 @@ public class AutoEntryService : BackgroundService
 
          var client = await _indyAuth.CreateClientAsync(userCredentials.Name, userCredentials.Password);
 
-         // TODO: make actual entries
+         await TryMakeEntry(client, "", "", "");
       }
    }
 
@@ -81,5 +82,26 @@ public class AutoEntryService : BackgroundService
       if (remainder == 0) return time;
 
       return time.AddTicks(ticks10Minutes - remainder);
+   }
+
+   private async Task<(bool Success, string FailReason)> TryMakeEntry(IIndyClient client, string tid, string subject, string activity)
+   {
+      try {
+         await client.MakeNormalEntryAsync(DateOnly.FromDateTime(DateTime.Today), tid, subject, activity);
+
+         return (true, "");
+      }
+      catch (NotFoundException)
+      {
+         return (false, "No hour for this teacher on this day!" );
+      }
+      catch (InvalidIndyDayException)
+      {
+         return (false, "Not a valid IndY-Day!");
+      }
+      catch (Exception)
+      {
+         return (false, "Something went wrong!");
+      }
    }
 }
