@@ -1,4 +1,5 @@
 https://hackatime.hackclub.com/api/v1/badge/U091Q6Y0MM4/azok42/IndYBot
+
 https://shieldcn.dev/group/github/stars/azok42/IndYBot+github/forks/azok42/IndYBot+github/license/azok42/IndYBot.svg?variant=secondary&size=default&theme=zinc
 
 # IndYBot
