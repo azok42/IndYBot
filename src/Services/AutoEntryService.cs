@@ -29,7 +29,7 @@ public class AutoEntryService : BackgroundService
             var con = _sqlHelper.CreateConnection();
 
             var getterSql = "SELECT id, status FROM auto_entry WHERE time BETWEEN @TimeRangeBegin AND @TimeRangeEnd;";
-            var autoEntries = await con.QueryAsync<(long Id, string Status)>(getterSql, new {
+            var autoEntries = await con.QueryAsync<(ulong Id, string Status)>(getterSql, new {
                   TimeRangeBegin = nowRounded.AddMinutes(-10).AddSeconds(1),
                   TimeRangeEnd = nowRounded
             });
@@ -45,7 +45,7 @@ public class AutoEntryService : BackgroundService
       }
    }
 
-   private async Task MakeEntries(IEnumerable<(long Id, string Status)> autoEntries)
+   private async Task MakeEntries(IEnumerable<(ulong Id, string Status)> autoEntries)
    {
       foreach (var autoEntry in autoEntries)
       {
