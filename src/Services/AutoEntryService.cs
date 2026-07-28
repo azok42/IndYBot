@@ -61,7 +61,21 @@ public class AutoEntryService : BackgroundService
 
          var client = await _indyAuth.CreateClientAsync(userCredentials.Name, userCredentials.Password);
 
-         await TryMakeEntry(client, "", "", "");
+         (string Teacher, string Subject, string Activity) entryParams;
+         var entryDayName = DateTime.Today.AddDays(1).DayOfWeek.ToString();
+         try
+         {
+            entryParams = await GetEntryParameters(autoEntry.Id, entryDayName);
+         }
+         catch (Exception)
+         {
+            // TODO: set status to Failed and tell user somehow
+            continue;
+         }
+
+         var success = await TryMakeEntry(client, entryParams.Teacher, entryParams.Subject, entryParams.Activity);
+         if (!success.Success)
+            continue; // TODO: set status to Failed and tell user somehow with reason
       }
    }
 
@@ -103,5 +117,45 @@ public class AutoEntryService : BackgroundService
       {
          return (false, "Something went wrong!");
       }
+   }
+
+   private async Task<(string TeacherId, string Subject, string Activity)> GetEntryParameters(ulong id, string dayName)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = $"SELECT type, value FROM user_standard WHERE id = @Id AND type LIKE '{dayName}%' OR type LIKE 'Global%';";
+      var queryResult = await con.QueryAsync<(string Type, string Value)>(sql, new { Id = id });
+      var standards = queryResult.ToDictionary(x => x.Type, x => x.Value);
+
+      var daySpecificStandards = standards.Where(x => x.Key.Contains(dayName)).ToDictionary();
+      try
+      {
+         return GetStandardValues(dayName, daySpecificStandards);
+      }
+      catch (Exception)
+      {
+         var globalStandards = standards.Where(x => x.Key.Contains("Global")).ToDictionary();
+         return GetStandardValues("Global", globalStandards);
+      }
+   }
+   
+   private (string TeacherId, string Subject, string Activity) GetStandardValues(string standardType, Dictionary<string, string> standards)
+   {
+      if (standards.Count() != 3)
+         throw new Exception($"Standards of type: {standardType}, are not fully made!");
+
+      var teacher = standards.GetValueOrDefault($"{standardType}Teacher");
+      if (string.IsNullOrEmpty(teacher))
+         throw new Exception($"Standard '{standardType}Teacher' is empty!");
+
+      var subject = standards.GetValueOrDefault($"{standardType}Subject");
+      if (string.IsNullOrEmpty(subject))
+         throw new Exception($"Standard '{standardType}Subject' is empty!");
+
+      var activity = standards.GetValueOrDefault($"{standardType}Description");
+      if (string.IsNullOrEmpty(activity))
+         throw new Exception($"Standard '{standardType}Description' is empty!");
+
+      return (teacher, subject, activity);
    }
 }
