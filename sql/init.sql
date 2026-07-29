@@ -19,6 +19,14 @@ CREATE TABLE IF NOT EXISTS user (
    password VARCHAR(50)
 );
 
+CREATE TABLE IF NOT EXISTS user_guild (
+   user_id BIGINT,
+   guild_id BIGINT,
+
+   PRIMARY KEY(user_id, guild_id),
+   FOREIGN KEY(guild_id) REFERENCES guild(id)
+);
+
 CREATE TABLE IF NOT EXISTS user_standard (
    id BIGINT,
    type VARCHAR(30),
