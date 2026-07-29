@@ -1,6 +1,8 @@
 using Discord;
 using Discord.WebSocket;
 using Discord.Interactions;
+using IndYBot.Helpers;
+using Dapper;
 using System.Reflection;
 
 namespace IndYBot;
@@ -10,20 +12,28 @@ public class InteractionHandler
    private readonly DiscordSocketClient _client;
    private readonly InteractionService _handler;
    private readonly IServiceProvider _services;
+   private readonly SQLHelper _sqlHelper;
 
    private static bool commandsRegistered = false;
 
-   public InteractionHandler(DiscordSocketClient client, InteractionService handler, IServiceProvider services)
+   public InteractionHandler(
+         DiscordSocketClient client, 
+         InteractionService handler, 
+         IServiceProvider services,
+         SQLHelper sqlHelper)
    {
       _client = client;
       _handler = handler;
       _services = services;
+      _sqlHelper = sqlHelper;
    }
 
    public async Task InitAsync()
    {
       _client.Ready += ReadyAsync;
       _client.InteractionCreated += HandleInteractionAsync;
+      _client.JoinedGuild += HandleNewGuild;
+      _client.LeftGuild += HandleGuildLeft;
 
       _handler.InteractionExecuted += HandleInteractionExecutedAsync;
    }
@@ -85,5 +95,23 @@ public class InteractionHandler
             await ctx.Interaction.RespondAsync($"Command failed: {result.ErrorReason}", ephemeral: true);
             break;
       }
+   }
+
+   private async Task HandleNewGuild(SocketGuild guild)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "INSERT INTO guild(id, default_channel) VALUES(@GuildId, @DefaultChannel);";
+      await con.QueryAsync(sql, new { GuildId = guild.Id, DefaultChannel = guild.DefaultChannel.Id });
+
+      await guild.DefaultChannel.SendMessageAsync("Initialize the bot the for the first time with '/admin init' or set specific configurations with '/admin channel'!");
+   }
+
+   private async Task HandleGuildLeft(SocketGuild guild)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "DELETE FROM guild WHERE id = @GuildId;";
+      await con.QueryAsync(sql, new { GuildId = guild.Id });
    }
 }

@@ -5,6 +5,14 @@ USE indy_bot;
 CREATE USER IF NOT EXISTS 'bot'@'localhost' IDENTIFIED BY 'indy_pass';
 GRANT ALL PRIVILEGES ON indy_bot.* TO 'bot'@'localhost';
 
+CREATE TABLE IF NOT EXISTS guild (
+   id BIGINT PRIMARY KEY,
+   default_channel BIGINT NOT NULL,
+   log BIGINT,
+   auto_entry BIGINT,
+   group_entry BIGINT
+);
+
 CREATE TABLE IF NOT EXISTS user (
    id BIGINT PRIMARY KEY,
    name VARCHAR(50) NOT NULL,
