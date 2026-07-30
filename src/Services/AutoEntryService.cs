@@ -104,7 +104,9 @@ public class AutoEntryService : BackgroundService
       else
          channel = (IMessageChannel) _discordClient.GetChannel(result.DefaultChannel);
 
-      await channel.SendMessageAsync(msg);
+      var user = await _discordClient.GetUserAsync(userId);
+
+      await channel.SendMessageAsync($"{user.Mention}{msg}", allowedMentions: AllowedMentions.All);
    }
 
    private bool IsBeforeIndyDay(DateTime date)
