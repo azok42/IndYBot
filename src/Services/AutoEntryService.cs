@@ -55,10 +55,12 @@ public class AutoEntryService : BackgroundService
       {
          if (!autoEntry.Status.Equals("Enabled")) continue;
 
+         var userId = autoEntry.Id;
+
          var con = _sqlHelper.CreateConnection();
          
          var sql = "SELECT name, password FROM user WHERE id = @Id;";
-         var userCredentials = await con.QueryFirstOrDefaultAsync<(string Name, string Password)>(sql, new { Id = autoEntry.Id });
+         var userCredentials = await con.QueryFirstOrDefaultAsync<(string Name, string Password)>(sql, new { Id = userId });
 
          if (userCredentials == default)
             continue; // TODO: Set status to failed and tell user somehow
@@ -69,7 +71,7 @@ public class AutoEntryService : BackgroundService
          var entryDayName = DateTime.Today.AddDays(1).DayOfWeek.ToString();
          try
          {
-            entryParams = await GetEntryParameters(autoEntry.Id, entryDayName);
+            entryParams = await GetEntryParameters(userId, entryDayName);
          }
          catch (Exception)
          {
