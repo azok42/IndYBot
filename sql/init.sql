@@ -7,6 +7,7 @@ GRANT ALL PRIVILEGES ON indy_bot.* TO 'bot'@'localhost';
 
 CREATE TABLE IF NOT EXISTS guild (
    id BIGINT PRIMARY KEY,
+   name VARCHAR(200),
    default_channel BIGINT NOT NULL,
    log BIGINT,
    auto_entry BIGINT,

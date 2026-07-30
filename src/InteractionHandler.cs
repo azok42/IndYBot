@@ -101,8 +101,8 @@ public class InteractionHandler
    {
       var con = _sqlHelper.CreateConnection();
 
-      var sql = "INSERT INTO guild(id, default_channel) VALUES(@GuildId, @DefaultChannel);";
-      await con.QueryAsync(sql, new { GuildId = guild.Id, DefaultChannel = guild.DefaultChannel.Id });
+      var sql = "INSERT INTO guild(id, name, default_channel) VALUES(@GuildId, @Name, @DefaultChannel);";
+      await con.QueryAsync(sql, new { GuildId = guild.Id, Name = guild.Name, DefaultChannel = guild.DefaultChannel.Id });
 
       await guild.DefaultChannel.SendMessageAsync("Initialize the bot the for the first time with '/admin init' or set specific configurations with '/admin channel'!");
    }
