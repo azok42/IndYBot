@@ -1,3 +1,5 @@
+using Discord;
+using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
 using IndYLib.Interfaces;
 using IndYLib.Exceptions;
@@ -8,11 +10,13 @@ public class AutoEntryService : BackgroundService
 {
    private readonly SQLHelper _sqlHelper;
    private readonly IIndyAuth _indyAuth;
+   private readonly DiscordSocketClient _discordClient;
 
-   public AutoEntryService(SQLHelper sqlHelper, IIndyAuth indyAuth)
+   public AutoEntryService(SQLHelper sqlHelper, IIndyAuth indyAuth, DiscordSocketClient discordClient)
    {
       _sqlHelper = sqlHelper;
       _indyAuth = indyAuth;
+      _discordClient = discordClient;
    }
 
    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -77,6 +81,30 @@ public class AutoEntryService : BackgroundService
          if (!success.Success)
             continue; // TODO: set status to Failed and tell user somehow with reason
       }
+   }
+
+   private async Task SetFailedStatus(ulong userId)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "UPDATE auto_entry SET status = 'Failed' WHERE id = @Id;";
+      await con.QueryAsync(sql, new { Id = userId });
+   }
+
+   private async Task NotifyUser(ulong userId, string msg)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "SELECT guild.default_channel, guild.auto_entry FROM guild INNER JOIN user_guild ON guild.id = user_guild.guild_id WHERE user_id = @UserId;";
+      var result = await con.QueryFirstOrDefaultAsync<(ulong DefaultChannel, ulong AutoEntryChannel)>(sql, new { UserId = userId });
+
+      IMessageChannel channel;
+      if (result.AutoEntryChannel != default)
+         channel = (IMessageChannel) _discordClient.GetChannel(result.AutoEntryChannel);
+      else
+         channel = (IMessageChannel) _discordClient.GetChannel(result.DefaultChannel);
+
+      await channel.SendMessageAsync(msg);
    }
 
    private bool IsBeforeIndyDay(DateTime date)
