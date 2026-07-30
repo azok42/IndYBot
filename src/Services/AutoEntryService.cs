@@ -63,7 +63,11 @@ public class AutoEntryService : BackgroundService
          var userCredentials = await con.QueryFirstOrDefaultAsync<(string Name, string Password)>(sql, new { Id = userId });
 
          if (userCredentials == default)
-            continue; // TODO: Set status to failed and tell user somehow
+         {
+            await SetFailedStatus(userId);
+            await NotifyUser(userId, "You need to save your user credentials with '/save'.");
+            continue; 
+         }
 
          var client = await _indyAuth.CreateClientAsync(userCredentials.Name, userCredentials.Password);
 
@@ -75,13 +79,18 @@ public class AutoEntryService : BackgroundService
          }
          catch (Exception)
          {
-            // TODO: set status to Failed and tell user somehow
+            await SetFailedStatus(userId);
+            await NotifyUser(userId, "You need to save standards with '/standard set'.");
             continue;
          }
 
          var success = await TryMakeEntry(client, entryParams.Teacher, entryParams.Subject, entryParams.Activity);
          if (!success.Success)
-            continue; // TODO: set status to Failed and tell user somehow with reason
+         {
+            await SetFailedStatus(userId);
+            await NotifyUser(userId, "Something went wrong at entry making! Check things like values in your standards with '/standard list'.");
+            continue;
+         }
       }
    }
 
