@@ -15,6 +15,7 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
       _sqlHelper = sqlHelper;
    }
 
+   [RequireUserPermission(Discord.GuildPermission.Administrator)]
    [SlashCommand("initialize", "Sets up your server for the very first time!")]
    public async Task InitCommand()
    {
