@@ -33,7 +33,7 @@ public class RequireLoginAttribute : PreconditionAttribute
       using var con = _sqlHelper.CreateConnection();
 
       string sql = "SELECT name, password FROM user WHERE id = @Id;";
-      var userCreds = await con.QueryFirstOrDefaultAsync(sql, new {Id = userId});
+      var userCreds = await con.QueryFirstOrDefaultAsync(sql, new { Id = userId });
 
       if (userCreds == null)
          return PreconditionResult.FromError("**[ERROR] Login needed!** No credentials found for your user!");
