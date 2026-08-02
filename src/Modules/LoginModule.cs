@@ -44,9 +44,12 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
       var con = _sqlHelper.CreateConnection();
 
       var sql = "SELECT name FROM user WHERE id = @Id LIMIT 1;";
-      var username = await con.QueryFirstAsync(sql, new { Id = Context.Interaction.User.Id });
+      var username = await con.QueryFirstOrDefaultAsync<string>(sql, new { Id = Context.Interaction.User.Id });
 
-      await RespondWithModalAsync<LoginModal>("login-modal", new LoginModal(username.name));
+      if (username != default)
+         await RespondWithModalAsync<LoginModal>("login-modal", new LoginModal(username));
+      else
+         await RespondWithModalAsync<LoginModal>("login-modal");
    }
 
    [ModalInteraction("login-modal")]
