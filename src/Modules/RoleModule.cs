@@ -1,12 +1,21 @@
 using Discord;
 using Discord.Interactions;
 using IndYBot.Helpers;
+using IndYBot.Modules.Preconditions;
+using IndYBot.Modules.Services;
 
 namespace IndYBot.Modules;
 
 [Group("role", "Manage roles")]
 public class RoleModule : InteractionModuleBase<SocketInteractionContext> 
 {
+   private readonly LoginService _loginService;
+
+   public RoleModule(LoginService loginService)
+   {
+      _loginService = loginService;
+   }
+
    [SlashCommand("grouprole", "Create a group role! (*name*_group)")]
    public async Task CreateGroupRoleCommand(
          [Summary("name", "Set the name of the role!")] string name,
@@ -80,5 +89,27 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
       }
 
       await RespondAsync("Role is not a group!");
+   }
+
+   [RequireLogin]
+   [SlashCommand("username", "Add you to a role called like your IndY-Username!")]
+   public async Task AddRealNameRoleCommand(
+         [Summary("color", "The color of you new role!")] string colorString = "")
+   {
+      var client = _loginService.GetClient(Context.Interaction.User.Id);
+      var student = await client!.GetStudentAsync();
+
+      if (!Color.TryParse(colorString, out var color))
+      {
+         await RespondAsync("Please use a real color! e.g.: #00FF00", ephemeral: true);
+         return;
+      }
+
+      var role = await Context.Guild.CreateRoleAsync(student.First().Username, color: color);
+
+      var user = Context.Interaction.User as IGuildUser;
+      await user!.AddRoleAsync(role.Id);
+
+      await RespondAsync($"Successfully added you to role {student.First().Username}!", ephemeral: true);
    }
 }
