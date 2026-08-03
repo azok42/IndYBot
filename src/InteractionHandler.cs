@@ -51,9 +51,9 @@ public class InteractionHandler
       await _handler.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
       ulong tmpGuildID = UInt64.Parse(File.ReadAllText("bot-info/tmpGuild").Trim());
-      var meh = await _handler.RegisterCommandsToGuildAsync(tmpGuildID);
+      var commands = await _handler.RegisterCommandsToGuildAsync(tmpGuildID);
 
-      Console.WriteLine($"{meh.Count()} commands are registered");
+      Console.WriteLine($"{commands.Count()} commands are registered");
 
       commandsRegistered = true;
    }
