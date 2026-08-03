@@ -14,13 +14,6 @@ This is a Discord bot for interacting with the IndY-API used in my school.
 
 - Paste the token into the 'token' file
 
-> [!WARNING]
-> The next 2 parts are just temporary!
-
-- Create the files in the bot-info directory: 'tmpGuild', 'tmpChannel' 
-
-- Put your guild id taken from Discord into 'tmpGuild' and the Id of a channel into 'tmpChannel'
-
 - Run bot
 
 ```bash
@@ -28,6 +21,22 @@ dotnet run
 ```
 
 - Pray to Holy GabeN everything works while it starts
+
+## Developing
+
+- same things as above (especially the last one)
+
+- add this line to the .csproj file (inside the PropertyGroup tag):
+
+```xml
+<DefineConstant>DEBUG</DefineConstant>
+```
+
+- also, in the 'bot-info' create files 'debugGuild' and 'debugChannel'
+
+- fill files with those tokens (a guild and a channel)
+
+---
 
 ## What is IndY?
 
