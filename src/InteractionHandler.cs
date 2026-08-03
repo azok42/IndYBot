@@ -40,20 +40,30 @@ public class InteractionHandler
 
    private async Task ReadyAsync()
    {
-      ulong tmpChannelID = UInt64.Parse(File.ReadAllText("bot-info/tmpChannel").Trim());
-      var channel = _client.GetChannel(tmpChannelID) as IMessageChannel;
-      if (channel != null)
-         await channel.SendMessageAsync("online!");
+      #if DEBUG
+         Console.WriteLine("Running in DEBUG mode!");   
+
+         ulong debugChannelId = UInt64.Parse(File.ReadAllText("bot-info/debugChannel").Trim());
+         var channel = _client.GetChannel(debugChannelId) as IMessageChannel;
+         if (channel != null)
+            await channel.SendMessageAsync("online in debug mode!");
+      #endif
 
       if (commandsRegistered)
          return;
 
       await _handler.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
-      ulong tmpGuildID = UInt64.Parse(File.ReadAllText("bot-info/tmpGuild").Trim());
-      var commands = await _handler.RegisterCommandsToGuildAsync(tmpGuildID);
+      #if DEBUG
 
-      Console.WriteLine($"{commands.Count()} commands are registered");
+         ulong debugGuildId = UInt64.Parse(File.ReadAllText("bot-info/debugGuild").Trim());
+         var commands = await _handler.RegisterCommandsToGuildAsync(debugGuildId);
+
+         Console.WriteLine($"{commands.Count()} commands have been registered");
+
+      #else
+         await _handler.RegisterCommandsGloballyAsync();
+      #endif
 
       commandsRegistered = true;
    }
