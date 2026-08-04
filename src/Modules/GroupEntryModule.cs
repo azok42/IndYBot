@@ -55,7 +55,7 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
          [Summary("hour", "The hour of your group entry. Leave empty for both hours!")] GetterModule.Hour? hour = null,
          [Summary("reason", "Why was this entry made? Leave empty for none.")] string reason = "",
          [Summary("role", "Optional role to ping!")] IRole? role = null,
-         [Summary("use-group-channel", "Wether to use the Group-Entry Channel (if set by a admin). False by default")] bool useGroupChannel = false)
+         [Summary("use-group-channel", "Wether to use the Group-Entry Channel (if set by a admin). False by default")] bool useGroupChannel = true)
    {
       await DeferAsync(ephemeral: true);
 
