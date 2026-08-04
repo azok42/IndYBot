@@ -15,6 +15,8 @@ public class InteractionHandler
    private readonly SQLHelper _sqlHelper;
 
    private static bool commandsRegistered = false;
+   private static string disconnectMsg= "";
+   private static DateTime? disconnectTime = null;
 
    public InteractionHandler(
          DiscordSocketClient client, 
@@ -34,6 +36,7 @@ public class InteractionHandler
       _client.InteractionCreated += HandleInteractionAsync;
       _client.JoinedGuild += HandleNewGuild;
       _client.LeftGuild += HandleGuildLeft;
+      _client.Disconnected += HandleDisconnect;
 
       _handler.InteractionExecuted += HandleInteractionExecutedAsync;
    }
@@ -49,6 +52,14 @@ public class InteractionHandler
             await channel.SendMessageAsync("online in debug mode!");
       #endif
 
+      await _handler.RegisterCommandsGloballyAsync();
+
+      if (!string.IsNullOrEmpty(disconnectMsg))
+      {
+         await LogToGuildsAsync(disconnectMsg);
+         disconnectMsg = "";
+      }
+
       if (commandsRegistered)
          return;
 
@@ -61,11 +72,32 @@ public class InteractionHandler
 
          Console.WriteLine($"{commands.Count()} commands have been registered");
 
-      #else
-         await _handler.RegisterCommandsGloballyAsync();
       #endif
 
       commandsRegistered = true;
+   }
+
+   private async Task LogToGuildsAsync(string msg)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "SELECT default_channel, log FROM guild;";
+      var channels = await con.QueryAsync<(ulong Default, ulong Log)>(sql);
+
+      if (channels == null)
+         return;
+      
+      foreach (var channelPair in channels)
+      {
+         var usedChannelId = channelPair.Log;
+
+         if (channelPair.Log == default)
+            usedChannelId = channelPair.Default;
+
+         var usedChannel = await _client.GetChannelAsync(usedChannelId) as IMessageChannel;
+
+         if (usedChannel != null)
+            await usedChannel.SendMessageAsync($"[LOG] Channel disconnected at {disconnectTime} and reconnected now! Message: {disconnectMsg}"); }
    }
 
    private async Task HandleInteractionAsync(SocketInteraction interaction)
@@ -123,5 +155,11 @@ public class InteractionHandler
 
       var sql = "DELETE FROM guild WHERE id = @GuildId;";
       await con.QueryAsync(sql, new { GuildId = guild.Id });
+   }
+
+   private async Task HandleDisconnect(Exception e)
+   {
+      disconnectMsg = e.Message;
+      disconnectTime = DateTime.Now;
    }
 }
