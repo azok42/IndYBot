@@ -130,7 +130,23 @@ public class InteractionHandler
             break;
 
          case InteractionCommandError.UnknownCommand:
-            await ctx.Interaction.RespondAsync("Unkown command", ephemeral: true);
+            await ctx.Interaction.RespondAsync("Unkown command?", ephemeral: true);
+            break;
+
+         case InteractionCommandError.BadArgs:
+            await ctx.Interaction.RespondAsync($"Invalid arguments given.", ephemeral: true);
+            break;
+
+         case InteractionCommandError.ConvertFailed:
+            await ctx.Interaction.RespondAsync($"Invalid format for a parameter.", ephemeral: true);
+            break;
+
+         case InteractionCommandError.ParseFailed:
+            await ctx.Interaction.RespondAsync($"Unable to parse command context.", ephemeral: true);
+            break;
+
+         case InteractionCommandError.Exception:
+            await ctx.Interaction.RespondAsync($"Command had an internal error: {result.ErrorReason}", ephemeral: true);
             break;
 
          default:
