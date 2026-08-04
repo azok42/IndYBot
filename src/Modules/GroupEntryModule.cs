@@ -4,8 +4,10 @@ using IndYBot.Modules.Preconditions;
 using IndYBot.Modules.AutocompleteHandlers;
 using IndYBot.Modules.Services;
 using IndYBot.Modules.Modals;
+using IndYBot.Helpers;
 using IndYLib.Interfaces;
 using IndYLib.Exceptions;
+using Dapper;
 
 namespace IndYBot.Modules;
 
@@ -13,13 +15,15 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
 {
    private readonly LoginService _loginService;
    private readonly QuickEntryService _quickEntryService;
+   private readonly SQLHelper _sqlHelper;
 
    private IIndyClient? _client = null;
 
-   public GroupEntryModule(LoginService loginService, QuickEntryService quickEntryService)
+   public GroupEntryModule(LoginService loginService, QuickEntryService quickEntryService, SQLHelper sqlHelper)
    {
       _loginService = loginService;
       _quickEntryService = quickEntryService;
+      _sqlHelper = sqlHelper;
    }
 
    public override void BeforeExecute(ICommandInfo command)
@@ -50,9 +54,26 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
          string description = "",
          [Summary("hour", "The hour of your group entry. Leave empty for both hours!")] GetterModule.Hour? hour = null,
          [Summary("reason", "Why was this entry made? Leave empty for none.")] string reason = "",
-         [Summary("role", "Optional role to ping!")] IRole? role = null)
+         [Summary("role", "Optional role to ping!")] IRole? role = null,
+         [Summary("use-group-channel", "Wether to use the Group-Entry Channel (if set by a admin). False by default")] bool useGroupChannel = false)
    {
-      await DeferAsync();
+      await DeferAsync(ephemeral: true);
+
+      IMessageChannel? channel = null;
+
+      if (useGroupChannel)
+      {
+         var con = _sqlHelper.CreateConnection();
+
+         var sql = "SELECT group_entry FROM guild WHERE id = @GuildId;";
+         var channelId = await con.QueryFirstOrDefaultAsync<ulong>(sql, new { GuildId = Context.Guild.Id });
+
+         if (channelId != default)
+            channel = await Context.Client.GetChannelAsync(channelId) as IMessageChannel;
+      }
+
+      if (channel == null)
+         channel = Context.Channel;
 
       Color color = Color.DarkGrey;
       try
@@ -106,17 +127,18 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
          .WithDescription("You can quickly make an entry with the following\noptions using the buttons below!")
          .WithFields(fields);
 
-      await ModifyOriginalResponseAsync(x => 
-            {
-               x.Embed = embed.Build();
-               x.Components = component.Build();
+      if (role == null)
+         await channel.SendMessageAsync(
+               embed: embed.Build(), 
+               components: component.Build());
+      else
+         await channel.SendMessageAsync(
+               embed: embed.Build(), 
+               components: component.Build(),
+               text: role.Mention,
+               allowedMentions: AllowedMentions.All);
 
-               if (role == null)
-                  return;
-
-               x.Content = role.Mention;
-               x.AllowedMentions = AllowedMentions.All;
-            });
+      await ModifyOriginalResponseAsync(x => x.Content = "Successfully make groupentry!");
    }
 
    private Color GetColorFromType(EntryType type)
