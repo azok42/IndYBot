@@ -6,6 +6,7 @@ using IndYLib.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using IndYBot.Modules.Services;
 using IndYBot.Helpers;
+using IndYBot.Services;
 
 namespace IndYBot;
 
@@ -28,6 +29,7 @@ class Bot
          .AddSingleton<LoginService>()
          .AddSingleton<QuickEntryService>()
          .AddSingleton<SQLHelper>(x => new SQLHelper(File.ReadAllText("sql/connection").Trim()))
+         .AddHostedService<AutoEntryService>()
          .AddIndyAuth()
          .BuildServiceProvider();
 
