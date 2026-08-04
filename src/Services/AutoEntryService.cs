@@ -6,6 +6,8 @@ using IndYLib.Exceptions;
 using IndYBot.Helpers;
 using Dapper;
 
+namespace IndYBot.Services;
+
 public class AutoEntryService : BackgroundService
 {
    private readonly SQLHelper _sqlHelper;
