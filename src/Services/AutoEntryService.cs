@@ -109,15 +109,15 @@ public class AutoEntryService : BackgroundService
       var sql = "SELECT guild.default_channel, guild.auto_entry FROM guild INNER JOIN user_guild ON guild.id = user_guild.guild_id WHERE user_id = @UserId;";
       var result = await con.QueryFirstOrDefaultAsync<(ulong DefaultChannel, ulong AutoEntryChannel)>(sql, new { UserId = userId });
 
-      IMessageChannel channel;
+      IMessageChannel? channel;
       if (result.AutoEntryChannel != default)
-         channel = (IMessageChannel) _discordClient.GetChannel(result.AutoEntryChannel);
+         channel = _discordClient.GetChannel(result.AutoEntryChannel) as IMessageChannel;
       else
-         channel = (IMessageChannel) _discordClient.GetChannel(result.DefaultChannel);
+         channel = _discordClient.GetChannel(result.DefaultChannel) as IMessageChannel;
 
       var user = await _discordClient.GetUserAsync(userId);
 
-      await channel.SendMessageAsync($"{user.Mention}{msg}", allowedMentions: AllowedMentions.All);
+      await channel!.SendMessageAsync($"{user.Mention}{msg}", allowedMentions: AllowedMentions.All);
    }
 
    private bool IsBeforeIndyDay(DateTime date)
