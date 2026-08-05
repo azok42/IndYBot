@@ -177,11 +177,14 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
 
    private (string FieldContent, bool ButtonDisabled) ProcessHourData(List<Returned> hour, Status status)
    {
-      if (hour.Any())
-         return (MakeEntryHourFieldContent(hour.First()), false);
-
       if (status == Status.EntriesMissing)
          return ("No entry made!", true);
+
+      if (hour.Any())
+      if (status == Status.FullySigned || status == Status.Cancelled || status == Status.NotSigned)
+         return (MakeEntryHourFieldContent(hour.First()), true);
+      else
+         return (MakeEntryHourFieldContent(hour.First()), false);
 
       return ("No entry made yet!", false);
    }
