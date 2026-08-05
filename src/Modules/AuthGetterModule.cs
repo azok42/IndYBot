@@ -175,7 +175,7 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
          .Build();
    }
 
-   private (string FieldContent, bool buttonDisabled) ProcessHourData(List<Returned> hour, Status status)
+   private (string FieldContent, bool ButtonDisabled) ProcessHourData(List<Returned> hour, Status status)
    {
       if (hour.Any())
          return (MakeEntryHourFieldContent(hour.First()), true);
