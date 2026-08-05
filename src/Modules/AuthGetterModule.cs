@@ -161,17 +161,33 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
 
    private MessageComponent BuildEntryButtons(bool hour3Disabled, bool hour4Disabled)
    {
-      return new ComponentBuilder()
-         .WithButton(
-               label: "Make entry for hour 3",
-               customId: "quickEntryHour3",
-               style: ButtonStyle.Primary,
-               disabled: hour3Disabled)
-         .WithButton(
-               label: "Make entry for hour 4",
-               customId: "quickEntryHour4",
-               style: ButtonStyle.Primary,
-               disabled: hour4Disabled)
+      return new ComponentBuilderV2()
+         .WithActionRow(
+            new List<IMessageComponentBuilder> {
+               new ButtonBuilder(
+                  label: "Make entry for hour 3",
+                  customId: "entry:3",
+                  style: ButtonStyle.Primary,
+                  isDisabled: hour3Disabled
+               ),
+               new ButtonBuilder(
+                  label: "Make entry for hour 4",
+                  customId: "entry:4",
+                  style: ButtonStyle.Primary,
+                  isDisabled: hour4Disabled
+               )
+            }
+         )
+         .WithActionRow(
+            new List<IMessageComponentBuilder> {
+               new ButtonBuilder(
+                  label: "Make entries for both hours",
+                  customId: "entry:7",
+                  style: ButtonStyle.Primary,
+                  isDisabled: hour3Disabled || hour4Disabled
+               )
+            }
+         )
          .Build();
    }
 
