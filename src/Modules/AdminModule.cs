@@ -1,3 +1,4 @@
+using Discord;
 using Discord.Interactions;
 using IndYBot.Helpers;
 using IndYBot.Modules.Modals;
@@ -55,5 +56,36 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
       await con.QueryAsync(sql, parameter);
 
       await RespondAsync("Successfully set new channels! To change channels use '/admin channelset' or to list used channels use '/admin channellist'!");
+   }
+
+   [RequireOwner]
+   [SlashCommand("global-message", "Sends a message to all channels!")]
+   public async Task SendGlobalMessage([Summary("message", "The message to be sent!")] string msg)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "SELECT default_channel FROM guild;";
+      var channelIds = await con.QueryAsync<ulong>(sql);
+
+      if (channelIds == null || !channelIds.Any())
+      {
+         await FollowupAsync("No guilds found in the database???", ephemeral: true);
+         return;
+      }
+
+      foreach (var channelId in channelIds)
+      {
+         var channel = (await Context.Client.GetChannelAsync(channelId)) as IMessageChannel;
+
+         if (channel == null)
+         {
+            await FollowupAsync($"Invalid channel ID saved in database: {channelId}", ephemeral: true);
+            continue;
+         }
+
+         await channel.SendMessageAsync(msg, allowedMentions: AllowedMentions.All);
+      }
+
+      await RespondAsync("Sent message to all available guilds!", ephemeral: true);
    }
 }
