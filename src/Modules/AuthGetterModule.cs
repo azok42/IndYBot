@@ -3,6 +3,7 @@ using Discord.Interactions;
 using IndYBot.Modules.Services;
 using IndYBot.Modules.Preconditions;
 using IndYBot.Modules.AutocompleteHandlers;
+using IndYBot.Modules.Modals;
 using IndYBot.Helpers;
 using IndYLib.Interfaces;
 using IndYLib.Models;
@@ -136,7 +137,7 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
          .AddField("Hour 4", hour4Content, true)
          .Build();
 
-      var buttons = BuildEntryButtons(hour3Disabled, hour4Disabled);
+      var buttons = BuildEntryButtons(hour3Disabled, hour4Disabled, date);
       await ModifyOriginalResponseAsync(x =>
             {
                x.Embed = embed;
@@ -159,20 +160,20 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
       };
    }
 
-   private MessageComponent BuildEntryButtons(bool hour3Disabled, bool hour4Disabled)
+   private MessageComponent BuildEntryButtons(bool hour3Disabled, bool hour4Disabled, string date)
    {
       return new ComponentBuilderV2()
          .WithActionRow(
             new List<IMessageComponentBuilder> {
                new ButtonBuilder(
                   label: "Make entry for hour 3",
-                  customId: "entry:3",
+                  customId: $"entry:3:{date}",
                   style: ButtonStyle.Primary,
                   isDisabled: hour3Disabled
                ),
                new ButtonBuilder(
                   label: "Make entry for hour 4",
-                  customId: "entry:4",
+                  customId: $"entry:4:{date}",
                   style: ButtonStyle.Primary,
                   isDisabled: hour4Disabled
                )
@@ -182,13 +183,31 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
             new List<IMessageComponentBuilder> {
                new ButtonBuilder(
                   label: "Make entries for both hours",
-                  customId: "entry:7",
+                  customId: $"entry:34:{date}",
                   style: ButtonStyle.Primary,
                   isDisabled: hour3Disabled || hour4Disabled
                )
             }
          )
          .Build();
+   }
+
+   [ComponentInteraction("entry:*:*", ignoreGroupNames: true)]
+   public async Task HandleEntryButtons(string hour, string date)
+   {
+      await RespondWithModalAsync<EntryModal>(
+         "entry", 
+         new EntryModal(
+            date: date, 
+            hour: Enum.Parse<Hour>("Hour"+hour)
+         )
+      );
+   }
+
+   [ModalInteraction("entry", ignoreGroupNames: true)]
+   public async Task HandleEntryModal(EntryModal modal)
+   {
+      await RespondAsync("Meh", ephemeral: true);
    }
 
    private (string FieldContent, bool ButtonDisabled) ProcessHourData(List<Returned> hour, Status status)
