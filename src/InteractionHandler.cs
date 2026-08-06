@@ -52,6 +52,12 @@ public class InteractionHandler
             await channel.SendMessageAsync("online in debug mode!");
       #endif
 
+      if (!string.IsNullOrEmpty(disconnectMsg))
+      {
+         await LogToGuildsAsync(disconnectMsg);
+         disconnectMsg = "";
+      }
+
       if (commandsRegistered)
          return;
 
@@ -67,12 +73,6 @@ public class InteractionHandler
       #else
 
          await _handler.RegisterCommandsGloballyAsync();
-
-         if (!string.IsNullOrEmpty(disconnectMsg))
-         {
-            await LogToGuildsAsync(disconnectMsg);
-            disconnectMsg = "";
-         }
 
       #endif
 
