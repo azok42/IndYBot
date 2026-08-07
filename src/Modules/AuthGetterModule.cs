@@ -207,7 +207,58 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
    [ModalInteraction("entry", ignoreGroupNames: true)]
    public async Task HandleEntryModal(EntryModal modal)
    {
-      await RespondAsync("Meh", ephemeral: true);
+      await DeferAsync(ephemeral: true);
+
+      if (!await MakeEntry(modal))
+      {
+         await ModifyOriginalResponseAsync(x => x.Content = "Failed to make entry!");
+         return;
+      }
+
+      await ModifyOriginalResponseAsync(x => x.Content = "Successfully made entry!");
+   }
+
+   private async Task<bool> MakeEntry(EntryModal entry)
+   {
+      if (!DateOnly.TryParse(entry.Date, out var date))
+      {
+         await FollowupAsync("Date parameter is not a valid IndY-Day!", ephemeral: true);
+         return false;
+      }
+
+      return await TryMakeEntry(async () =>
+      {
+         if (entry.Hour == null)
+            await _client!.MakeNormalEntryAsync(date, entry.TeacherId!, entry.Subject!, entry.Activity!);
+         else
+            await _client!.MakeNormalEntryAsync(date, (int) entry.Hour.First(), entry.TeacherId!, entry.Subject!, entry.Activity!);
+      });
+   }
+
+   private async Task<bool> TryMakeEntry(Func<Task> action)
+   {
+      try {
+         await action();
+         return true;
+      }
+      catch (NotFoundException)
+      {
+         await FollowupAsync("No hour for this teacher on this day!", ephemeral: true);
+
+         return false;
+      }
+      catch (InvalidIndyDayException)
+      {
+         await FollowupAsync("Not a valid IndY-Day!", ephemeral: true);
+
+         return false;
+      }
+      catch (Exception)
+      {
+         await FollowupAsync("Something went wrong!", ephemeral: true);
+
+         return false;
+      }
    }
 
    private (string FieldContent, bool ButtonDisabled) ProcessHourData(List<Returned> hour, Status status)
