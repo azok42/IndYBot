@@ -65,7 +65,7 @@ public class GroupEntryModule : InteractionModuleBase<SocketInteractionContext>
       {
          var con = _sqlHelper.CreateConnection();
 
-         var sql = "SELECT group_entry FROM guild WHERE id = @GuildId;";
+         var sql = "SELECT group_entry_channel FROM guild WHERE id = @GuildId;";
          var channelId = await con.QueryFirstOrDefaultAsync<ulong>(sql, new { GuildId = Context.Guild.Id });
 
          if (channelId != default)

@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS guild (
    id BIGINT UNSIGNED PRIMARY KEY,
    name VARCHAR(200),
    default_channel BIGINT NOT NULL,
-   log BIGINT,
-   auto_entry BIGINT,
-   group_entry BIGINT
+   log_channel BIGINT,
+   auto_entry_channel BIGINT,
+   group_entry_channel BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS user (

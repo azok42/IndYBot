@@ -52,7 +52,7 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
          GuildId = Context.Guild.Id
       };
 
-      var sql = "UPDATE guild SET default_channel = COALESCE(default_channel, @DefaultChannel), log = COALESCE(log, @Log), auto_entry = COALESCE(auto_entry, @AutoEntry), group_entry = COALESCE(group_entry, @GroupEntry) WHERE id = @GuildId;";
+      var sql = "UPDATE guild SET default_channel = COALESCE(default_channel, @DefaultChannel), log_channel = COALESCE(log_channel, @Log), auto_entry_channel = COALESCE(auto_entry_channel, @AutoEntry), group_entry_channel = COALESCE(group_entry_channel, @GroupEntry) WHERE id = @GuildId;";
       await con.QueryAsync(sql, parameter);
 
       await RespondAsync("Successfully set new channels! To change channels use '/admin channelset' or to list used channels use '/admin channellist'!");

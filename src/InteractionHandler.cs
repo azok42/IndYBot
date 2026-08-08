@@ -83,7 +83,7 @@ public class InteractionHandler
    {
       var con = _sqlHelper.CreateConnection();
 
-      var sql = "SELECT default_channel, log FROM guild;";
+      var sql = "SELECT default_channel, log_channel FROM guild;";
       var channels = await con.QueryAsync<(ulong Default, ulong Log)>(sql);
 
       if (channels == null)

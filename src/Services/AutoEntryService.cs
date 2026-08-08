@@ -108,7 +108,7 @@ public class AutoEntryService : BackgroundService
    {
       var con = _sqlHelper.CreateConnection();
 
-      var sql = "SELECT guild.default_channel, guild.auto_entry FROM guild INNER JOIN user_guild ON guild.id = user_guild.guild_id WHERE user_id = @UserId;";
+      var sql = "SELECT guild.default_channel, guild.auto_entry_channel FROM guild INNER JOIN user_guild ON guild.id = user_guild.guild_id WHERE user_id = @UserId;";
       var result = await con.QueryFirstOrDefaultAsync<(ulong DefaultChannel, ulong AutoEntryChannel)>(sql, new { UserId = userId });
 
       IMessageChannel? channel;
