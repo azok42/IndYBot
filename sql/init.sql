@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS guild (
 CREATE TABLE IF NOT EXISTS user (
    id BIGINT PRIMARY KEY,
    name VARCHAR(50) NOT NULL,
-   password VARCHAR(50)
+   password VARCHAR(50),
+   whereis_status VARCHAR(10) DEFAULT "disabled"
 );
 
 CREATE TABLE IF NOT EXISTS user_guild (
