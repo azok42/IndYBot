@@ -5,11 +5,11 @@ using IndYBot.Modules.Preconditions;
 
 namespace IndYBot.Modules;
 
-public class NicknameModule : InteractionModuleBase<SocketInteractionContext>
+public class UserModule : InteractionModuleBase<SocketInteractionContext>
 {
    private readonly LoginService _loginService;
 
-   public NicknameModule(LoginService loginService)
+   public UserModule(LoginService loginService)
    {
       _loginService = loginService;
    }
