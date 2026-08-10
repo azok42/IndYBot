@@ -6,6 +6,21 @@ using Dapper;
 
 namespace IndYBot.Modules;
 
+public enum GuildChannelType
+{
+   [ChoiceDisplay("Default channel")]
+   DefaultChannel,
+
+   [ChoiceDisplay("Log channel")]
+   LogChannel,
+
+   [ChoiceDisplay("Group-Entry channel")]
+   GroupEntryChannel,
+
+   [ChoiceDisplay("Auto-Entry channel")]
+   AutoEntryChannel
+}
+
 [Group("admin", "Various admin commands!")]
 public class AdminModule : InteractionModuleBase<SocketInteractionContext>
 {
@@ -60,32 +75,69 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
 
    [RequireOwner]
    [SlashCommand("global-message", "Sends a message to all channels!")]
-   public async Task SendGlobalMessage([Summary("message", "The message to be sent!")] string msg)
+   public async Task SendGlobalMessage(
+         [Summary("message", "The message to be sent!")] string msg,
+         [Summary("channel", "The channel the message will be sent to! If not set by the guild, defaults back to default channel!")] 
+         GuildChannelType channelType = GuildChannelType.DefaultChannel)
    {
       var con = _sqlHelper.CreateConnection();
 
-      var sql = "SELECT default_channel FROM guild;";
-      var channelIds = await con.QueryAsync<ulong>(sql);
+      var sql = "SELECT default_channel, log_channel, auto_entry_channel, group_entry_channel FROM guild;";
+      var guildChannels = await con.QueryAsync<(ulong, ulong, ulong, ulong)>(sql);
 
-      if (channelIds == null || !channelIds.Any())
+      if (guildChannels == null || !guildChannels.Any())
       {
          await FollowupAsync("No guilds found in the database???", ephemeral: true);
          return;
       }
 
-      foreach (var channelId in channelIds)
+      foreach (var channels in guildChannels)
       {
-         var channel = (await Context.Client.GetChannelAsync(channelId)) as IMessageChannel;
-
-         if (channel == null)
+         try
          {
-            await FollowupAsync($"Invalid channel ID saved in database: {channelId}", ephemeral: true);
+            IMessageChannel channel = GetChannel(channelType, channels);
+            
+            await channel.SendMessageAsync(msg, allowedMentions: AllowedMentions.All);
+         }
+         catch (Exception ex)
+         {
+            Console.WriteLine($"Failed to send message to a server: {ex.Message}");
+            
+            await FollowupAsync("Could not send message to one of the servers. Skipping...", ephemeral: true);
             continue;
          }
-
-         await channel.SendMessageAsync(msg, allowedMentions: AllowedMentions.All);
       }
 
       await RespondAsync("Sent message to all available guilds!", ephemeral: true);
+   }
+
+   private IMessageChannel GetChannel(GuildChannelType channelType, (ulong, ulong, ulong, ulong) channels)
+   {
+      var channelId = channelType switch
+      {
+         GuildChannelType.DefaultChannel => channels.Item1,
+         GuildChannelType.LogChannel=> channels.Item2,
+         GuildChannelType.AutoEntryChannel => channels.Item3,
+         GuildChannelType.GroupEntryChannel => channels.Item4,
+         _ => channels.Item1
+      };
+
+      if (channelId == default)
+      {
+         if (channelType != GuildChannelType.DefaultChannel)
+            return GetChannel(GuildChannelType.DefaultChannel, channels);
+         else
+            throw new Exception("Requested id is default");
+      }
+
+      var channel = Context.Client.GetChannel(channelId) as IMessageChannel;
+
+      if (channel != null)
+         return channel;
+
+      if (channelType != GuildChannelType.DefaultChannel)
+         return GetChannel(GuildChannelType.DefaultChannel, channels);
+      else
+         throw new Exception("Invalid Id");
    }
 }
