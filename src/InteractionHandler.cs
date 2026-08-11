@@ -4,6 +4,7 @@ using Discord.Interactions;
 using IndYBot.Helpers;
 using Dapper;
 using System.Reflection;
+using Microsoft.Extensions.Configuration;
 
 namespace IndYBot;
 
@@ -13,6 +14,7 @@ public class InteractionHandler
    private readonly InteractionService _handler;
    private readonly IServiceProvider _services;
    private readonly SQLHelper _sqlHelper;
+   private readonly IConfigurationRoot _config;
 
    private static bool commandsRegistered = false;
    private static string disconnectMsg= "";
@@ -22,12 +24,14 @@ public class InteractionHandler
          DiscordSocketClient client, 
          InteractionService handler, 
          IServiceProvider services,
-         SQLHelper sqlHelper)
+         SQLHelper sqlHelper,
+         IConfigurationRoot config)
    {
       _client = client;
       _handler = handler;
       _services = services;
       _sqlHelper = sqlHelper;
+      _config = config;
    }
 
    public async Task InitAsync()
@@ -43,14 +47,19 @@ public class InteractionHandler
 
    private async Task ReadyAsync()
    {
-      #if DEBUG
+      if (_config["Debug:Enabled"] == "true")
+      {
          Console.WriteLine("Running in DEBUG mode!");   
 
-         ulong debugChannelId = UInt64.Parse(File.ReadAllText("bot-info/debugChannel").Trim());
+         var debugChannelIdString = _config["Debug:Channel"];
+         if (debugChannelIdString == null)
+            throw new Exception("Debug channel id was not found!");
+
+         ulong debugChannelId = UInt64.Parse(debugChannelIdString);
          var channel = _client.GetChannel(debugChannelId) as IMessageChannel;
          if (channel != null)
             await channel.SendMessageAsync("online in debug mode!");
-      #endif
+      }
 
       if (!string.IsNullOrEmpty(disconnectMsg))
       {
@@ -63,18 +72,22 @@ public class InteractionHandler
 
       await _handler.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
 
-      #if DEBUG
+      if (_config["Debug:Enabled"] == "true")
+      {
+         var debugGuildIdString = _config["Debug:Guild"];
+         if (debugGuildIdString == null)
+            throw new Exception("Debug guild id was not found!");
 
-         ulong debugGuildId = UInt64.Parse(File.ReadAllText("bot-info/debugGuild").Trim());
+         ulong debugGuildId = UInt64.Parse(debugGuildIdString);
          var commands = await _handler.RegisterCommandsToGuildAsync(debugGuildId);
 
          Console.WriteLine($"{commands.Count()} commands have been registered");
 
-      #else
-
+      }
+      else
+      {
          await _handler.RegisterCommandsGloballyAsync();
-
-      #endif
+      }
 
       commandsRegistered = true;
    }

@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using IndYLib.Extensions;
 using IndYLib.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using IndYBot.Modules.Services;
 using IndYBot.Helpers;
 using IndYBot.Services;
@@ -21,14 +22,23 @@ class Bot
          GatewayIntents = GatewayIntents.AllUnprivileged
       };
 
+      var config = new ConfigurationBuilder()
+         .AddJsonFile("appsettings.json")
+         .Build();
+
+      var dbConnectionString = config["Database:Connection"];
+      if (dbConnectionString == null)
+         throw new ArgumentNullException("Db connection string was not found!");
+
       using var services = new ServiceCollection()
+         .AddSingleton(config)
          .AddSingleton(socketConfig)
          .AddSingleton<DiscordSocketClient>()
          .AddSingleton(x => new InteractionService(x.GetRequiredService<DiscordSocketClient>()))
          .AddSingleton<InteractionHandler>()
          .AddSingleton<LoginService>()
          .AddSingleton<QuickEntryService>()
-         .AddSingleton<SQLHelper>(x => new SQLHelper(File.ReadAllText("sql/connection").Trim()))
+         .AddSingleton<SQLHelper>(x => new SQLHelper(dbConnectionString))
          .AddHostedService<AutoEntryService>()
          .AddIndyAuth()
          .BuildServiceProvider();
@@ -42,7 +52,10 @@ class Bot
 
       await services.GetRequiredService<InteractionHandler>().InitAsync();
 
-      string token = File.ReadAllText("bot-info/token").Trim();
+      var token = config["Bot:Token"];
+      if (token == null)
+         throw new ArgumentNullException("Bot token was not found!");
+
       await client.LoginAsync(TokenType.Bot, token);
       await client.StartAsync();
 

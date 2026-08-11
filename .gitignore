@@ -8,6 +8,7 @@ sql/connection
 
 # dotenv files
 .env
+appsettings.json
 
 # tmp files/directories
 tmp*
