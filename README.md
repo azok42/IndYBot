@@ -8,11 +8,13 @@ This is a Discord bot for interacting with the IndY-API used in my school.
 
 - Clone repo
 
-- Make directory bot-info and inside file 'token'
+- Rename the appsettings.json.local file to appsettings.json
 
 - Create on [Discord's Developer website](https://discord.com/developers/home) a bot or get the **token** from an existing one.
 
-- Paste the token into the 'token' file
+- Inside the appsettings.json set the 'Bot:Token' key to your token
+
+- Paste your connection string for the database into the 'Database:Connection' key
 
 - Run bot
 
@@ -26,15 +28,15 @@ dotnet run
 
 - same things as above (especially the last one)
 
-- add this line to the .csproj file (inside the PropertyGroup tag):
+- Modify your appsettings.json file again to include:
 
-```xml
-<DefineConstant>DEBUG</DefineConstant>
-```
+  - A 'Debug:Enabled' key set to 'true'
 
-- also, in the 'bot-info' create files 'debugGuild' and 'debugChannel'
+  - A 'Debug:Channel' key set to your test channel's ID
 
-- fill files with those tokens (a guild and a channel)
+  - A 'Debug:Guild' key set to your test guild's ID
+
+- Again, because it's **really** important to do: Pray to Holy GabeN
 
 ---
 
