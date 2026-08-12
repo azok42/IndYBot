@@ -77,12 +77,17 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
    [SlashCommand("disable-logs", "Disable logging for your guild!")]
    public async Task DisableLoggingCommand()
    {
-      var con = _sqlHelper.CreateConnection();
-
-      var sql = "UPDATE guild SET logs_enabled = FALSE WHERE id = @Id;";
-      await con.QueryAsync(sql, new { Id = Context.Guild.Id });
+      await SetLoggingStatus(false);
 
       await RespondAsync("Successfully disabled logging for your guild!", ephemeral: true);
+   }
+   
+   private async Task SetLoggingStatus(bool status)
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "UPDATE guild SET logs_enabled = @Status WHERE id = @Id;";
+      await con.QueryAsync(sql, new { Status = status, Id = Context.Guild.Id });
    }
 
    [RequireOwner]
