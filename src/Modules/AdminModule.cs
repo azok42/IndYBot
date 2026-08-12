@@ -81,7 +81,16 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
 
       await RespondAsync("Successfully disabled logging for your guild!", ephemeral: true);
    }
-   
+
+   [RequireUserPermission(Discord.GuildPermission.Administrator)]
+   [SlashCommand("enable-logs", "Enable logging for your guild! Why did you disable it in the first place?")]
+   public async Task EnableLoggingCommand()
+   {
+      await SetLoggingStatus(true);
+
+      await RespondAsync("Successfully re-enabled logging for your guild!", ephemeral: true);
+   }
+
    private async Task SetLoggingStatus(bool status)
    {
       var con = _sqlHelper.CreateConnection();
