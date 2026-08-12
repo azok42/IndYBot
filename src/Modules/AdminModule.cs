@@ -73,6 +73,18 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
       await RespondAsync("Successfully set new channels! To change channels use '/admin channelset' or to list used channels use '/admin channellist'!");
    }
 
+   [RequireUserPermission(Discord.GuildPermission.Administrator)]
+   [SlashCommand("disable-logs", "Disable logging for your guild!")]
+   public async Task DisableLoggingCommand()
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "UPDATE guild SET logs_enabled = FALSE WHERE id = @Id;";
+      await con.QueryAsync(sql, new { Id = Context.Guild.Id });
+
+      await RespondAsync("Successfully disabled logging for your guild!", ephemeral: true);
+   }
+
    [RequireOwner]
    [SlashCommand("global-message", "Sends a message to all channels!")]
    public async Task SendGlobalMessage(

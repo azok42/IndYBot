@@ -96,18 +96,21 @@ public class InteractionHandler
    {
       var con = _sqlHelper.CreateConnection();
 
-      var sql = "SELECT default_channel, log_channel FROM guild;";
-      var channels = await con.QueryAsync<(ulong Default, ulong Log)>(sql);
+      var sql = "SELECT default_channel, log_channel, logs_enabled FROM guild;";
+      var guildLogSettings = await con.QueryAsync<(ulong Default, ulong Log, bool LogsEnabled)>(sql);
 
-      if (channels == null)
+      if (guildLogSettings == null)
          return;
       
-      foreach (var channelPair in channels)
+      foreach (var settings in guildLogSettings)
       {
-         var usedChannelId = channelPair.Log;
+         if (!settings.LogsEnabled)
+            continue;
 
-         if (channelPair.Log == default)
-            usedChannelId = channelPair.Default;
+         var usedChannelId = settings.Log;
+
+         if (settings.Log == default)
+            usedChannelId = settings.Default;
 
          var usedChannel = await _client.GetChannelAsync(usedChannelId) as IMessageChannel;
 
