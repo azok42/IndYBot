@@ -1,0 +1,15 @@
+{
+   "Database": {
+      "Connection": "<replace with db connection string>"
+   },
+
+   "Bot": {
+      "Token": "<replace with bot token>"
+   },
+
+   "Debug": {
+      "Enabled": "false",
+      "Channel": null,
+      "Guild": null
+   }
+}
