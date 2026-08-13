@@ -71,7 +71,9 @@ public class AutoEntryService : BackgroundService
             continue; 
          }
 
-         var client = await _indyAuth.CreateClientAsync(userCredentials.Name, userCredentials.Password);
+         var password = SecurityHelper.Decrypt(userCredentials.Password);
+
+         var client = await _indyAuth.CreateClientAsync(userCredentials.Name, password);
 
          (string Teacher, string Subject, string Activity) entryParams;
          var entryDayName = DateTime.Today.AddDays(1).DayOfWeek.ToString();

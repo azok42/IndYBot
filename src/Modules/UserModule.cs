@@ -68,12 +68,13 @@ public class UserModule : InteractionModuleBase<SocketInteractionContext>
 
       var indyDayDate = indyDays.First().Date;
 
+      var password = SecurityHelper.Decrypt(queryResult.Password);
       IIndyClient client;
 
       if (_loginService.HasClient(user.Id))
          client = _loginService.GetClient(user.Id)!;
       else
-         client = await _loginService.AddClient(user.Id, queryResult.Username, queryResult.Password);
+         client = await _loginService.AddClient(user.Id, queryResult.Username, password);
 
       var name = user.Username;
       var entries = await client.GetEntriesAsync(indyDayDate);

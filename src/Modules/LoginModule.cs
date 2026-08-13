@@ -64,13 +64,15 @@ public class LoginModule : InteractionModuleBase<SocketInteractionContext>
    [ModalInteraction("savelogin-modal")]
    public async Task HandleSaveLoginModal(SaveLoginModal modal)
    {
-      if (modal.UsernameInput == null)
+      if (modal.UsernameInput == null || modal.PasswordInput == null)
          throw new NullReferenceException("Input is null");
 
       var con = _sqlHelper.CreateConnection();
+      
+      var password = SecurityHelper.Encrypt(modal.PasswordInput);
 
       var sql = "INSERT INTO user (id, name, password) VALUES (@Id, @Name, @Password) ON DUPLICATE KEY UPDATE name=@Name, password=@Password;";
-      await con.QueryAsync(sql, new {Id = Context.Interaction.User.Id, Name = modal.UsernameInput, Password = modal.PasswordInput});
+      await con.QueryAsync(sql, new { Id = Context.Interaction.User.Id, Name = modal.UsernameInput, Password = password });
 
       await RespondAsync("Please save successful! Make a '/info student call' to ensure it worked!", ephemeral: true);
    }
