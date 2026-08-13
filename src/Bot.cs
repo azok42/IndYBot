@@ -26,6 +26,11 @@ class Bot
          .AddJsonFile("appsettings.json")
          .Build();
 
+      var masterKey = config["Database:EncryptionKey"];
+      if (masterKey == null)
+         throw new ArgumentNullException("MasterKey was not found!");
+      SecurityHelper.Init(masterKey);
+
       var dbConnectionString = config["Database:Connection"];
       if (dbConnectionString == null)
          throw new ArgumentNullException("Db connection string was not found!");
