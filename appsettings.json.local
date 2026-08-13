@@ -1,6 +1,7 @@
 {
    "Database": {
-      "Connection": "<replace with db connection string>"
+      "Connection": "<replace with db connection string>",
+      "EncryptionKey": <"replace with AES-256 encryption key">
    },
 
    "Bot": {

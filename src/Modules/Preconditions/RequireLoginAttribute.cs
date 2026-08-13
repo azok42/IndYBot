@@ -35,10 +35,12 @@ public class RequireLoginAttribute : PreconditionAttribute
       string sql = "SELECT name, password FROM user WHERE id = @Id;";
       var userCreds = await con.QueryFirstOrDefaultAsync<(string Name, string Password)>(sql, new { Id = userId });
 
+      var rawPassword = SecurityHelper.Decrypt(userCreds.Password);
+
       if (userCreds == default)
          return PreconditionResult.FromError("**[ERROR] Login needed!** No credentials found for your user!");
 
-      await _loginService.AddClient(userId, userCreds.Name, userCreds.Password);
+      await _loginService.AddClient(userId, userCreds.Name, rawPassword);
 
       if (_loginService.HasClient(userId))
          return PreconditionResult.FromSuccess();
