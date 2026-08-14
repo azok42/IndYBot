@@ -107,7 +107,7 @@ public class AuthGetterModule : InteractionModuleBase<SocketInteractionContext>
          [Summary("date", "A date in the week to want to get infos for!")]
          [Autocomplete(typeof(IndyDayAutocompleteHandler))] string dateString = "")
    {
-      await DeferAsync();
+      await DeferAsync(ephemeral: true);
 
       DateOnly today;
 
