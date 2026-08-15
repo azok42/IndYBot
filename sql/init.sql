@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS user_standard (
 CREATE TABLE IF NOT EXISTS auto_entry (
    id BIGINT UNSIGNED PRIMARY KEY,
    time TIME NOT NULL,
-   status VARCHAR(30) NOT NULL,
+   status VARCHAR(30) NOT NULL DEFAULT "enabled",
 
    FOREIGN KEY(id) REFERENCES user(id)
 );
