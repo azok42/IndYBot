@@ -1,22 +1,14 @@
 using Discord;
+using Discord.WebSocket;
 using Discord.Interactions;
 using IndYBot.Helpers;
-using IndYBot.Modules.Preconditions;
-using IndYBot.Modules.Services;
 
 namespace IndYBot.Modules;
 
-[Group("role", "Manage roles")]
-public class RoleModule : InteractionModuleBase<SocketInteractionContext> 
+[Group("group", "Manage groups")]
+public class GroupModule : InteractionModuleBase<SocketInteractionContext> 
 {
-   private readonly LoginService _loginService;
-
-   public RoleModule(LoginService loginService)
-   {
-      _loginService = loginService;
-   }
-
-   [SlashCommand("grouprole", "Create a group role! (*name*_group)")]
+   [SlashCommand("new", "Create a group role! (*name*_group)")]
    public async Task CreateGroupRoleCommand(
          [Summary("name", "Set the name of the role!")] string name,
          [Summary("color", "Set the color of the role!")] string color)
@@ -31,9 +23,45 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
       await RespondAsync($"Successfully created role: {name}", ephemeral: true);
    }
 
-   [SlashCommand("list_groups", "List all groups a user is in!")]
-   public async Task ListGroupsCommand(
-         [Summary("user", "The user to join!")] IUser user)
+   [SlashCommand("list", "List all groups on the server!")]
+   public async Task ListAllGroupsCommand()
+   {
+      await RespondAsync("# Groups\n");  
+
+      var roles = Context.Guild.Roles;
+      var groups = roles.Where(role => role.Name.EndsWith("_group")).ToList();
+
+      await MessageHelper.SendListMessageAsync(
+            groups,
+            Context,
+            group => $"- **{group.Name.Replace("_group", "")}**\n");
+   }
+
+   [SlashCommand("members", "List all members of a group!")]
+   public async Task MembersCommand([Summary("group", "The group to get members for!")] IRole group)
+   {
+      if (!group.Name.EndsWith("_group"))
+      {
+         await RespondAsync("Role is not a group!");
+         return;
+      }
+
+      var groupName = group.Name.Replace("_group", "");
+
+      await RespondAsync($"# Members in group {groupName}\n");
+
+      var role = (SocketRole) group;
+      var members = role.Members.Select(user => user.DisplayName).ToList();
+
+      await MessageHelper.SendListMessageAsync(
+            members,
+            Context,
+            member => $"- {member}\n");
+   }
+
+   [SlashCommand("user", "List all groups a user is in!")]
+   public async Task ListUserGroupsCommand(
+         [Summary("user", "The user to check!")] IUser user)
    {
       await RespondAsync($"# Groups for user {user.Mention}\n");
 
@@ -59,7 +87,7 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
             });
    }
 
-   [SlashCommand("add_user", "Add a user to a group!")]
+   [SlashCommand("add", "Add a user to a group!")]
    public async Task AddUserToGroup(
          [Summary("role", "The role to join!")] IRole role,
          [Summary("user", "The user to join!")] IUser user)
@@ -73,10 +101,10 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
 
       await guildUser.AddRoleAsync(role.Id);
 
-      await RespondAsync($"Successfully add user {user} to role {role.Name}", ephemeral: true);
+      await RespondAsync($"Successfully added user {user} to role {role.Name}", ephemeral: true);
    }
 
-   [SlashCommand("delete_group", "Deletes a group role!")]
+   [SlashCommand("delete", "Deletes a group role!")]
    public async Task RemoveRoleCommand(
          [Summary("role", "The role to join!")] IRole role)
    {
@@ -89,27 +117,5 @@ public class RoleModule : InteractionModuleBase<SocketInteractionContext>
       }
 
       await RespondAsync("Role is not a group!");
-   }
-
-   [RequireLogin]
-   [SlashCommand("username", "Add you to a role called like your IndY-Username!")]
-   public async Task AddRealNameRoleCommand(
-         [Summary("color", "The color of you new role!")] string colorString = "")
-   {
-      var client = _loginService.GetClient(Context.Interaction.User.Id);
-      var student = await client!.GetStudentAsync();
-
-      if (!Color.TryParse(colorString, out var color))
-      {
-         await RespondAsync("Please use a real color! e.g.: #00FF00", ephemeral: true);
-         return;
-      }
-
-      var role = await Context.Guild.CreateRoleAsync(student.First().Username, color: color);
-
-      var user = Context.Interaction.User as IGuildUser;
-      await user!.AddRoleAsync(role.Id);
-
-      await RespondAsync($"Successfully added you to role {student.First().Username}!", ephemeral: true);
    }
 }
