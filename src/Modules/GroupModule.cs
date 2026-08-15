@@ -22,8 +22,22 @@ public class GroupModule : InteractionModuleBase<SocketInteractionContext>
       await RespondAsync($"Successfully created role: {name}", ephemeral: true);
    }
 
+   [SlashCommand("list", "List all groups on the server!")]
+   public async Task ListAllGroupsCommand()
+   {
+      await RespondAsync("# Groups\n");  
+
+      var roles = Context.Guild.Roles;
+      var groups = roles.Where(role => role.Name.EndsWith("_group")).ToList();
+
+      await MessageHelper.SendListMessageAsync(
+            groups,
+            Context,
+            group => $"- **{group.Name.Replace("_group", "")}**\n");
+   }
+
    [SlashCommand("user", "List all groups a user is in!")]
-   public async Task ListGroupsCommand(
+   public async Task ListUserGroupsCommand(
          [Summary("user", "The user to check!")] IUser user)
    {
       await RespondAsync($"# Groups for user {user.Mention}\n");
