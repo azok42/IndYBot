@@ -1,4 +1,5 @@
 using Discord;
+using Discord.WebSocket;
 using Discord.Interactions;
 using IndYBot.Helpers;
 
@@ -34,6 +35,28 @@ public class GroupModule : InteractionModuleBase<SocketInteractionContext>
             groups,
             Context,
             group => $"- **{group.Name.Replace("_group", "")}**\n");
+   }
+
+   [SlashCommand("members", "List all members of a group!")]
+   public async Task MembersCommand([Summary("group", "The group to get members for!")] IRole group)
+   {
+      if (!group.Name.EndsWith("_group"))
+      {
+         await RespondAsync("Role is not a group!");
+         return;
+      }
+
+      var groupName = group.Name.Replace("_group", "");
+
+      await RespondAsync($"# Members in group {groupName}\n");
+
+      var role = (SocketRole) group;
+      var members = role.Members.Select(user => user.DisplayName).ToList();
+
+      await MessageHelper.SendListMessageAsync(
+            members,
+            Context,
+            member => $"- {member}\n");
    }
 
    [SlashCommand("user", "List all groups a user is in!")]
