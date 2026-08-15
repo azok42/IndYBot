@@ -101,6 +101,17 @@ public class AutoEntryModule : InteractionModuleBase<SocketInteractionContext>
       await ModifyOriginalResponseAsync(x => x.Content = $"Your automatic entry happens at {time.ToString(@"hh\:mm")} and has status: {status}");
    }
 
+   [SlashCommand("reset", "Remove the auto-entry entirely!")]
+   public async Task ResetCommand()
+   {
+      var con = _sqlHelper.CreateConnection();
+
+      var sql = "DELETE FROM auto_entry WHERE id = @Id;";
+      await con.QueryAsync(sql, new { Id = Context.Interaction.User.Id });
+
+      await RespondAsync("Successfully removed automatic entry!", ephemeral: true);
+   }
+
    [SlashCommand("info", "Get info about automatic entries!")]
    public async Task InfoCommand()
    {
