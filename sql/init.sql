@@ -1,47 +1,33 @@
-CREATE DATABASE IF NOT EXISTS indy_bot;
+CREATE DATABASE IF NOT EXISTS indy_bot_db;
 
-USE indy_bot;
+USE indy_bot_db;
 
 CREATE USER IF NOT EXISTS 'bot'@'localhost' IDENTIFIED BY 'indy_pass';
-GRANT ALL PRIVILEGES ON indy_bot.* TO 'bot'@'localhost';
+GRANT ALL PRIVILEGES ON indy_bot_db.* TO 'bot'@'localhost';
 
-CREATE TABLE IF NOT EXISTS guild (
-   id BIGINT UNSIGNED PRIMARY KEY,
-   name VARCHAR(200),
-   logs_enabled BOOLEAN NOT NULL DEFAULT FALSE,
-   default_channel BIGINT NOT NULL,
-   log_channel BIGINT,
-   auto_entry_channel BIGINT,
-   group_entry_channel BIGINT
+CREATE TABLE users (
+   id UNSIGNED BIGINT PRIMARY KEY AUTO_INCREMENT,
+   discord_id UNSIGNED BIGINT UNIQUE NOT NULL,
+
+   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 );
 
-CREATE TABLE IF NOT EXISTS user (
-   id BIGINT UNSIGNED PRIMARY KEY,
-   name VARCHAR(50) NOT NULL,
+CREATE TABLE user_settings (
+   user_id UNSIGNED BIGINT PRIMARY KEY,
+
+   whereis_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+   whereis_visibility ENUM('Group', 'Server') NOT NULL DEFAULT 'Group',
+
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE credentials (
+   user_id UNSIGNED BIGINT PRIMARY KEY,
+
+   username VARCHAR(255) NOT NULL,
    password VARCHAR(255) NOT NULL,
-   whereis_status VARCHAR(10) NOT NULL DEFAULT "disabled"
-);
 
-CREATE TABLE IF NOT EXISTS user_guild (
-   user_id BIGINT UNSIGNED,
-   guild_id BIGINT UNSIGNED,
+   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-   PRIMARY KEY(user_id, guild_id),
-   FOREIGN KEY(guild_id) REFERENCES guild(id)
-);
-
-CREATE TABLE IF NOT EXISTS user_standard (
-   id BIGINT UNSIGNED,
-   type VARCHAR(30),
-   value VARCHAR(100) NOT NULL,
-
-   PRIMARY KEY(id, type)
-);
-
-CREATE TABLE IF NOT EXISTS auto_entry (
-   id BIGINT UNSIGNED PRIMARY KEY,
-   time TIME NOT NULL,
-   status VARCHAR(30) NOT NULL DEFAULT "enabled",
-
-   FOREIGN KEY(id) REFERENCES user(id)
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
