@@ -25,3 +25,22 @@ CREATE TABLE credentials (
 
    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE guilds (
+   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   discord_id BIGINT UNSIGNED UNIQUE NOT NULL,
+
+   timezone VARCHAR(64) NOT NULL DEFAULT "Europe/Vienna",
+
+   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE guild_features (
+   guild_id BIGINT UNSIGNED NOT NULL,
+   feature VARCHAR(64) NOT NULL,
+   enabled BOOLEAN NOT NULL DEFAULT TRUE,
+
+   PRIMARY KEY(guild_id, feature),
+   FOREIGN KEY(guild_id) REFERENCES guilds(id) ON DELETE CASCADE
+);
