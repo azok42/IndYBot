@@ -6,8 +6,8 @@ CREATE USER IF NOT EXISTS 'bot'@'localhost' IDENTIFIED BY 'indy_pass';
 GRANT ALL PRIVILEGES ON indy_bot_db.* TO 'bot'@'localhost';
 
 CREATE TABLE users (
-   id UNSIGNED BIGINT PRIMARY KEY AUTO_INCREMENT,
-   discord_id UNSIGNED BIGINT UNIQUE NOT NULL,
+   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   discord_id BIGINT UNSIGNED UNIQUE NOT NULL,
 
    whereis_enabled BOOLEAN NOT NULL DEFAULT FALSE,
    whereis_visibility ENUM('Group', 'Server') NOT NULL DEFAULT 'Group',
@@ -16,7 +16,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE credentials (
-   user_id UNSIGNED BIGINT PRIMARY KEY,
+   user_id BIGINT UNSIGNED PRIMARY KEY,
 
    username VARCHAR(255) NOT NULL,
    password VARCHAR(255) NOT NULL,
