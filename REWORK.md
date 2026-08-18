@@ -168,8 +168,6 @@ Top level files: Bot.cs, InteractionHandler.cs
 
   - history
 
-  - on_duplicate
-
   - notifications type:{disabled, on_failure, always}
 
 #### Where-Is (InfoModule)
