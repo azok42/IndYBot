@@ -44,3 +44,97 @@ CREATE TABLE guild_features (
    PRIMARY KEY(guild_id, feature),
    FOREIGN KEY(guild_id) REFERENCES guilds(id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE groups (
+   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   guild_id BIGINT UNSIGNED UNIQUE NOT NULL,
+   owner_id BIGINT UNSIGNED UNIQUE NOT NULL,
+
+   name VARCHAR(100) NOT NULL,
+   role_id BIGINT UNSIGNED NOT NULL,
+   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+   FOREIGN KEY(guild_id) REFERENCES guilds(id),
+   FOREIGN KEY(owner_id) REFERENCES users(id)
+);
+
+CREATE TABLE group_members (
+   group_id BIGINT UNSIGNED,
+   user_id BIGINT UNSIGNED,
+
+   role ENUM('Member', 'Moderator', 'Owner') NOT NULL DEFAULT 'Member',
+   joined_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+   PRIMARY KEY(group_id, user_id),
+   FOREIGN KEY(group_id) REFERENCES guilds(id) ON DELETE CASCADE,
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE group_invites (
+   id BIGINT UNSIGNED PRIMARY KEY,
+
+   group_id BIGINT UNSIGNED UNIQUE NOT NULL,
+   inviter_id BIGINT UNSIGNED UNIQUE NOT NULL,
+   invitee_id BIGINT UNSIGNED UNIQUE NOT NULL,
+
+   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   expires_at DATETIME NOT NULL,
+
+   FOREIGN KEY(group_id) REFERENCES groups(id) ON DELETE CASCADE,
+   FOREIGN KEY(inviter_id) REFERENCES users(id) ON DELETE CASCADE,
+   FOREIGN KEY(invitee_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE group_entries (
+   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+   group_id BIGINT UNSIGNED NOT NULL,
+   creator_id BIGINT UNSIGNED NOT NULL,
+
+   entry_date DATETIME NOT NULL,
+   subject VARCHAR(255) NOT NULL,
+   teacher VARCHAR(255) NOT NULL,
+   description VARCHAR(255) NOT NULL,
+
+   hour3 BOOLEAN NOT NULL,
+   hour4 BOOLEAN NOT NULL,
+
+   status ENUM('Open', 'Closed') NOT NULL DEFAULT 'Open',
+   created_id DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   closed_at DATETIME,
+
+   FOREIGN KEY(group_id) REFERENCES groups(id) ON DELETE CASCADE,
+   FOREIGN KEY(creator_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE group_entry_members (
+   group_entry_id BIGINT UNSIGNED,
+   user_id BIGINT UNSIGNED,
+
+   joined_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+   
+   PRIMARY KEY(group_entry_id, user_id),
+
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+   FOREIGN KEY(group_entry_id) REFERENCES group_entries(id) ON DELETE CASCADE
+);
+
+CREATE TABLE group_entry_templates (
+   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+
+   group_id BIGINT UNSIGNED NOT NULL,
+   creator_id BIGINT UNSIGNED NOT NULL,
+
+   name VARCHAR(100) NOT NULL,
+   subject VARCHAR(100) NOT NULL,
+   teacher VARCHAR(100) NOT NULL,
+   description VARCHAR(100) NOT NULL,
+
+   hour3 BOOLEAN NOT NULL,
+   hour4 BOOLEAN NOT NULL,
+
+   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+   FOREIGN KEY(group_id) REFERENCES groups(id) ON DELETE CASCADE,
+   FOREIGN KEY(creator_id) REFERENCES users(id) ON DELETE CASCADE
+);
