@@ -170,7 +170,7 @@ Top level files: Bot.cs, InteractionHandler.cs
 
   - on_duplicate
 
-  - notifications
+  - notifications type:{disabled, on_failure, always}
 
 #### Where-Is (InfoModule)
 
