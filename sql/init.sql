@@ -138,3 +138,39 @@ CREATE TABLE group_entry_templates (
    FOREIGN KEY(group_id) REFERENCES groups(id) ON DELETE CASCADE,
    FOREIGN KEY(creator_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE auto_entries (
+   user_id BIGINT UNSIGNED,
+   indy_day TINYINT CHECK (indy_day IN (1, 3, 5)),
+   execution_day TINYINT NOT NULL CHECK (execution_day BETWEEN 0 AND 6),
+
+   subject VARCHAR(100) NOT NULL,
+   teacher VARCHAR(100) NOT NULL,
+   description VARCHAR(100) NOT NULL,
+
+   PRIMARY KEY(user_id, indy_day),
+
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE auto_entry_configs (
+   user_id BIGINT UNSIGNED PRIMARY KEY,
+
+   time TIME NOT NULL,
+   enabled BOOLEAN NOT NULL DEFAULT FALSE,
+   notifications ENUM('Disabled', 'Always', 'On_Error') NOT NULL DEFAULT 'Always',
+
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE auto_entry_history (
+   user_id BIGINT UNSIGNED,
+   executed_at DATETIME(6),
+
+   status ENUM('Success', 'Failed', 'Skipped') NOT NULL,
+   entries_created TINYINT NOT NULL CHECK (entries_created BETWEEN 0 AND 2),
+
+   PRIMARY KEY(user_id, executed_at),
+
+   FOREIGN KEY(user_id) REFERENCES users(id)
+);
