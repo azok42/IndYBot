@@ -172,5 +172,5 @@ CREATE TABLE auto_entry_history (
 
    PRIMARY KEY(user_id, executed_at),
 
-   FOREIGN KEY(user_id) REFERENCES users(id)
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
