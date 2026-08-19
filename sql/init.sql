@@ -174,3 +174,13 @@ CREATE TABLE auto_entry_history (
 
    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE guild_admins (
+   guild_id BIGINT UNSIGNED,
+   user_id BIGINT UNSIGNED,
+
+   PRIMARY KEY(guild_id, user_id),
+
+   FOREIGN KEY(guild_id) REFERENCES guilds(id) ON DELETE CASCADE,
+   FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+);
