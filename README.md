@@ -158,6 +158,16 @@ Console.WriteLine(Convert.ToBase64String(keyBytes)); // Save this string!
 
 - **Token** Paste your Discord bot token, retreived from [Discord Developer Portal](https://discord.com/developers/applications)
 
+- **Debug things** You can ignore them, if jýou just want to use IndY-Bot
+
+---
+
+After adding everything, start the bot with:
+
+- **Cloned**: ```dotnet run``` while in the project directory
+
+- **Downloaded**: Simply execute the binary in the directory
+
 ## Developing
 
 ## IndY 
