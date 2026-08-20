@@ -45,6 +45,7 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
   - No need to specify the data when using the standard entry
 </details>
+
 ## IndY 
 
 ## Installation
