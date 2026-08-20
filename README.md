@@ -17,7 +17,7 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 ## Features
 
 <details>
-<summary>- Getter for various IndY info</summary>
+<summary>Getter for various IndY info</summary>
 
   Getters include, but are not limited to:
   
