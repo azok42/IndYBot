@@ -125,7 +125,7 @@ Edit your appsettings.json and add:
 
 - **Encryption Key** Used for encrypting the passwords, has to be a 32 Byte long Base64 string
 
-You can create such a key without problems with script:
+You can create such a key without problems with this script:
 
 ```cs
 using var rng = RandomNumberGenerator.Create();
