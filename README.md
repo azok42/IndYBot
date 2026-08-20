@@ -86,6 +86,16 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
   - Ping a role (usecase for groups maybe??)
 </details>
 
+<details>
+<summary>Absence Rank</summary>
+
+  - Get absence entry count of everyone
+
+  - Everyone even includes pleople from the school, who don't use IndYBot
+
+  - Includes a rank of the student compared to all other students in the school
+</details>
+
 ## IndY 
 
 ## Installation
