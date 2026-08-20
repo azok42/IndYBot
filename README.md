@@ -130,6 +130,15 @@ The first 6 hours on each day are getting cut by 10 minutes. This time is being 
 
 Teachers have a set schedule of where and when they have a IndY-Hour. Also teachers can host 'Special-IndY' hours. These are *special* hours where their normal schedule is being altered, for the duration of the Special-IndY. Examples are lectures not tied directly to school.
 
+There are also other types of entries students can make:
+
+| Type | Description |
+| -------------- | --------------- |
+| Normal | Normal or Special-IndY entries |
+| Absence | Entries marking absence in IndY-Hours |
+| School-Event| Events like field trips |
+
+
 ## Installation
 
 ## Setup
