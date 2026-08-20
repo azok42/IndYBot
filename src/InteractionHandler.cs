@@ -180,7 +180,7 @@ public class InteractionHandler
       var sql = "INSERT INTO guild(id, name, default_channel) VALUES(@GuildId, @Name, @DefaultChannel);";
       await con.QueryAsync(sql, new { GuildId = guild.Id, Name = guild.Name, DefaultChannel = guild.DefaultChannel.Id });
 
-      await guild.DefaultChannel.SendMessageAsync("Initialize the bot the for the very first time with '/admin init' or set specific configurations with '/admin channel'!");
+      await guild.DefaultChannel.SendMessageAsync("# Thank you for using IndYBot in your server!\nInitialize the bot the for the very first time with '/admin init' or set specific configurations with '/admin channel'!");
    }
 
    private async Task HandleGuildLeft(SocketGuild guild)
