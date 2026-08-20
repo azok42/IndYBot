@@ -59,6 +59,32 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
 </details>
 
+<details>
+<summary>Groups</summary>
+
+  - Create, delete and add users to groups
+
+  - Recognise groups by group role (*name*_group)
+
+  - Not much usecases other than roles, but who am I to remove a useless feature I added
+</details>
+
+<details>
+<summary>Group Entries</summary>
+
+  - Create a public entry
+
+  - Everyone in the channel can join
+
+  - Provide all data and a reason
+
+  - Provide a optional description of the entry (used in the actual entry)
+
+  - Override the provided description, when making entries
+
+  - Ping a role (usecase for groups maybe??)
+</details>
+
 ## IndY 
 
 ## Installation
