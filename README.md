@@ -32,6 +32,19 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
   - ...
 </details>
 
+<details>
+<summary>Making of all types of entries</summary>
+
+  - Manual, specific entries for each day
+
+  - Normal, school-event and absence types
+
+  - Individual hour making
+
+  - Setting standards for quickly making entries
+
+  - No need to specify the data when using the standard entry
+</details>
 ## IndY 
 
 ## Installation
