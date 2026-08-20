@@ -96,6 +96,14 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
   - Includes a rank of the student compared to all other students in the school
 </details>
 
+<details>
+<summary>WhereIs</summary>
+
+  - Get the next entry location of a user
+
+  - OptIn: Users have to enable it
+</details>
+
 ## IndY 
 
 ## Installation
