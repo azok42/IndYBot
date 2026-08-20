@@ -156,7 +156,7 @@ rng.GetBytes(keyBytes);
 Console.WriteLine(Convert.ToBase64String(keyBytes)); // Save this string!
 ```
 
-- For the Token paste your Discord bot token, retreived from [Discord Developer Portal](https://discord.com/developers/applications)
+- **Token** Paste your Discord bot token, retreived from [Discord Developer Portal](https://discord.com/developers/applications)
 
 ## Developing
 
