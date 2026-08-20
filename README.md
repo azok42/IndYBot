@@ -16,6 +16,22 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
 ## Features
 
+<details>
+<summary>- Getter for various IndY info</summary>
+
+  Getters include, but are not limited to:
+  
+  - Subjects: get all available subjects
+  
+  - Hours: get all available IndY-Hours a user can make entries for
+  
+  - Special-IndY: get all currently active Special-IndY
+  
+  - Studentcount: get the current amount of students, which made entries for a specific teacher
+
+  - ...
+</details>
+
 ## IndY 
 
 ## Installation
