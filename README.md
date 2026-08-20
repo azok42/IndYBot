@@ -25,3 +25,5 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 ## Developing
 
 ## Licence
+
+Copyright © 2026 Anton Hackner. Licensed under the [GPL-3.0](LICENSE).
