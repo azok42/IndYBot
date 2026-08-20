@@ -104,6 +104,16 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
   - OptIn: Users have to enable it
 </details>
 
+<details>
+<summary>Admin</summary>
+
+  - Set the guild's needed channels or fall back to default channel
+
+  - Enable and Disable logging
+
+  - Only for *bot owner*: Send global message to all known guilds
+</details>
+
 ## IndY 
 
 ## Installation
