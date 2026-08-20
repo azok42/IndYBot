@@ -119,6 +119,9 @@ If you clone, you need to rename the 'appsettings.json.local' file for further s
 
 ## Setup
 
+Use the ```init.sql``` file from the release or repo to setup your database.
+For example, you can do this by going into the database CLI and source the file.
+
 Edit your appsettings.json and add:
 
 - **Database connection string** Example: "Server=localhost;Port=3306;Database=database;Uid=user;Pwd=password"
@@ -140,7 +143,7 @@ Console.WriteLine(Convert.ToBase64String(keyBytes)); // Save this string!
 
 ---
 
-After adding everything, start the bot with:
+After adding everything, start your database and the bot with:
 
 - **Cloned**: ```dotnet run``` while in the project directory
 
