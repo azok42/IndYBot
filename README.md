@@ -122,7 +122,41 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
 ## Installation
 
+Prerequisites
+
+- MariaDB / MySQL
+
+- .Net 10, if cloned
+
+> [!IMPORTANT]
+> I only used XAMPP's provided database when testing
+
+Clone the repository or download a release
+
+```bash
+git clone https://github.com/azok42/IndYBot     # Clone
+```
+
+If you clone, you need to rename the 'appsettings.json.local' file for further setup
+
 ## Setup
+
+Edit your appsettings.json and add:
+
+- **Database connection string** Example: "Server=localhost;Port=3306;Database=database;Uid=user;Pwd=password"
+
+- **Encryption Key** Used for encrypting the passwords, has to be a 32 Byte long Base64 string
+
+You can create such a key without problems with script:
+
+```cs
+using var rng = RandomNumberGenerator.Create();
+byte[] keyBytes = new byte[32];
+rng.GetBytes(keyBytes);
+Console.WriteLine(Convert.ToBase64String(keyBytes)); // Save this string!
+```
+
+- For the Token paste your Discord bot token, retreived from [Discord Developer Portal](https://discord.com/developers/applications)
 
 ## Developing
 
