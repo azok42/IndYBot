@@ -122,6 +122,14 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
 ## IndY 
 
+IndY is a education system in my school in Austria.
+
+### Concept
+
+The first 6 hours on each day are getting cut by 10 minutes. This time is being used on Monday, Wednesday and Friday in what is now the 3rd and 4th hour. For these hours students have to make entries, at least the day before the actuall IndY-Day. If enough entries are missing, the student's behaviour mark is made worse.
+
+Teachers have a set schedule of where and when they have a IndY-Hour. Also teachers can host 'Special-IndY' hours. These are *special* hours where their normal schedule is being altered, for the duration of the Special-IndY. Examples are lectures not tied directly to school.
+
 ## Installation
 
 ## Setup
