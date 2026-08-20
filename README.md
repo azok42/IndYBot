@@ -114,6 +114,12 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
   - Only for *bot owner*: Send global message to all known guilds
 </details>
 
+<details>
+<summary>Other</summary>
+
+  - Nickname: set your nickname to your real name (by IndY)
+</details>
+
 ## IndY 
 
 ## Installation
