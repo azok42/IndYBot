@@ -46,6 +46,19 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
   - No need to specify the data when using the standard entry
 </details>
 
+<details>
+<summary>Automatic Entries</summary>
+
+  - Entries will be made at specified times
+
+  - Time can be set and will execute at that time on the day before IndY
+
+  - Standards will be used to get entry data like teacher, subject, ..
+
+  - Errors will be written to the guilds auto-entry channel
+
+</details>
+
 ## IndY 
 
 ## Installation
