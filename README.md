@@ -16,109 +16,87 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
 ## Features
 
-<details>
-<summary>Getter for various IndY info</summary>
-<br />
+### Information
 
-  Getters include, but are not limited to:
+Getters include, but are not limited to:
   
-  - Subjects: get all available subjects
+- Subjects: get all available subjects
   
-  - Hours: get all available IndY-Hours a user can make entries for
+- Hours: get all available IndY-Hours a user can make entries for
   
-  - Special-IndY: get all currently active Special-IndY
+- Special-IndY: get all currently active Special-IndY
   
-  - Studentcount: get the current amount of students, which made entries for a specific teacher
+- Studentcount: get the current amount of students, which made entries for a specific teacher
 
-  - ...
-</details>
+- ...
 
-<details>
-<summary>Entry making</summary>
+### Entry making
 
-  - Manual, specific entries for each day
+- Manual, specific entries for each day
 
-  - Normal, school-event and absence types
+- Normal, school-event and absence types
 
-  - Individual hour making
+- Individual hour making
 
-  - Setting standards for quickly making entries
+- Setting standards for quickly making entries
 
-  - No need to specify the data when using the standard entry
-</details>
+- No need to specify the data when using the standard entry
 
-<details>
-<summary>Automatic Entries</summary>
+### Automatic Entries
 
-  - Entries will be made at specified times
+- Entries will be made at specified times
 
-  - Time can be set and will execute at that time on the day before IndY
+- Time can be set and will execute at that time on the day before IndY
 
-  - Standards will be used to get entry data like teacher, subject, ..
+- Standards will be used to get entry data like teacher, subject, ..
 
-  - Errors will be written to the guilds auto-entry channel
+- Errors will be written to the guilds auto-entry channel
 
-</details>
+### Groups
 
-<details>
-<summary>Groups</summary>
+- Create, delete and add users to groups
 
-  - Create, delete and add users to groups
+- Recognise groups by group role (*name*_group)
 
-  - Recognise groups by group role (*name*_group)
+### Group Entries
 
-  - Not much usecases other than roles, but who am I to remove a useless feature I added
-</details>
+- Create a public entry
 
-<details>
-<summary>Group Entries</summary>
+- Everyone in the channel can join
 
-  - Create a public entry
+- Provide all data and a reason
 
-  - Everyone in the channel can join
+- Provide a optional description of the entry (used in the actual entry)
 
-  - Provide all data and a reason
+- Override the provided description, when making entries
 
-  - Provide a optional description of the entry (used in the actual entry)
+- Ping a role, for example a group role
 
-  - Override the provided description, when making entries
+### Absence Rank
 
-  - Ping a role (usecase for groups maybe??)
-</details>
+- Get absence entry count of everyone
 
-<details>
-<summary>Absence Rank</summary>
+- Everyone even includes pleople from the school, who don't use IndYBot
 
-  - Get absence entry count of everyone
+- Includes a rank of the student compared to all other students in the school
 
-  - Everyone even includes pleople from the school, who don't use IndYBot
+### WhereIs
 
-  - Includes a rank of the student compared to all other students in the school
-</details>
+- Get the next entry location of a user
 
-<details>
-<summary>WhereIs</summary>
+- OptIn: Users have to enable it
 
-  - Get the next entry location of a user
+### Admin
 
-  - OptIn: Users have to enable it
-</details>
+- Set the guild's needed channels or fall back to default channel
 
-<details>
-<summary>Admin</summary>
+- Enable and Disable logging
 
-  - Set the guild's needed channels or fall back to default channel
+- Only for *bot owner*: Send global message to all known guilds
 
-  - Enable and Disable logging
+### Other
 
-  - Only for *bot owner*: Send global message to all known guilds
-</details>
-
-<details>
-<summary>Other</summary>
-
-  - Nickname: set your nickname to your real name (by IndY)
-</details>
+- Nickname: set your nickname to your real name (by IndY)
 
 ## Installation
 
