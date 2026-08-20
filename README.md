@@ -170,6 +170,14 @@ After adding everything, start the bot with:
 
 ## Developing
 
+For developers wanting to improve IndY-Bot:
+
+- Follow all previous steps (except for the ignore part)
+
+- In ```appsettings.json``` enable Debug and set a debug channel and guild
+
+- Pray to Holy GabeN that everythin works
+
 ## IndY 
 
 IndY is a education system in my school in Austria.
