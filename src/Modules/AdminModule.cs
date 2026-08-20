@@ -106,6 +106,7 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
          [Summary("channel", "The channel the message will be sent to! If not set by the guild, defaults back to default channel!")] 
          GuildChannelType channelType = GuildChannelType.DefaultChannel)
    {
+      await DeferAsync(ephemeral: true);
       var con = _sqlHelper.CreateConnection();
 
       var sql = "SELECT default_channel, log_channel, auto_entry_channel, group_entry_channel FROM guild;";
@@ -134,7 +135,7 @@ public class AdminModule : InteractionModuleBase<SocketInteractionContext>
          }
       }
 
-      await RespondAsync("Sent message to all available guilds!", ephemeral: true);
+      await ModifyOriginalResponseAsync(x => x.Content = "Sent message to all available guilds!");
    }
 
    private IMessageChannel GetChannel(GuildChannelType channelType, (ulong, ulong, ulong, ulong) channels)
