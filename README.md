@@ -120,6 +120,12 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
   - Nickname: set your nickname to your real name (by IndY)
 </details>
 
+## Installation
+
+## Setup
+
+## Developing
+
 ## IndY 
 
 IndY is a education system in my school in Austria.
@@ -137,13 +143,6 @@ There are also other types of entries students can make:
 | Normal | Normal or Special-IndY entries |
 | Absence | Entries marking absence in IndY-Hours |
 | School-Event| Events like field trips |
-
-
-## Installation
-
-## Setup
-
-## Developing
 
 ## Licence
 
