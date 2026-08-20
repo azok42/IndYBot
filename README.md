@@ -50,7 +50,7 @@ Getters include, but are not limited to:
 
 - Standards will be used to get entry data like teacher, subject, ..
 
-- Errors will be written to the guilds auto-entry channel
+- Errors will be written to the guild's auto-entry channel
 
 ### Groups
 
@@ -66,7 +66,7 @@ Getters include, but are not limited to:
 
 - Provide all data and a reason
 
-- Provide a optional description of the entry (used in the actual entry)
+- Provide an optional description of the entry (used in the actual entry)
 
 - Override the provided description, when making entries
 
@@ -76,7 +76,7 @@ Getters include, but are not limited to:
 
 - Get absence entry count of everyone
 
-- Everyone even includes pleople from the school, who don't use IndYBot
+- Everyone even includes people from the school, who don't use IndYBot
 
 - Includes a rank of the student compared to all other students in the school
 
@@ -134,7 +134,7 @@ rng.GetBytes(keyBytes);
 Console.WriteLine(Convert.ToBase64String(keyBytes)); // Save this string!
 ```
 
-- **Token** Paste your Discord bot token, retreived from [Discord Developer Portal](https://discord.com/developers/applications)
+- **Token** Paste your Discord bot token, retrieved from [Discord Developer Portal](https://discord.com/developers/applications)
 
 - **Debug things** You can ignore them, if you just want to use IndY-Bot
 
@@ -154,15 +154,15 @@ For developers wanting to improve IndY-Bot:
 
 - In ```appsettings.json``` enable Debug and set a debug channel and guild
 
-- Pray to Holy GabeN that everythin works
+- Pray to Holy GabeN that everything works
 
 ## IndY 
 
-IndY is a education system in my school in Austria.
+IndY is an education system in my school in Austria.
 
 ### Concept
 
-The first 6 hours on each day are getting cut by 10 minutes. This time is being used on Monday, Wednesday and Friday in what is now the 3rd and 4th hour. For these hours students have to make entries, at least the day before the actuall IndY-Day. If enough entries are missing, the student's behaviour mark is made worse.
+The first 6 hours on each day are getting cut by 10 minutes. This time is being used on Monday, Wednesday and Friday in what is now the 3rd and 4th hour. For these hours students have to make entries, at least the day before the actual IndY-Day. If enough entries are missing, the student's behaviour mark is made worse.
 
 Teachers have a set schedule of where and when they have a IndY-Hour. Also teachers can host 'Special-IndY' hours. These are *special* hours where their normal schedule is being altered, for the duration of the Special-IndY. Examples are lectures not tied directly to school.
 
