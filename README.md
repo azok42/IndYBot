@@ -158,7 +158,7 @@ Console.WriteLine(Convert.ToBase64String(keyBytes)); // Save this string!
 
 - **Token** Paste your Discord bot token, retreived from [Discord Developer Portal](https://discord.com/developers/applications)
 
-- **Debug things** You can ignore them, if jýou just want to use IndY-Bot
+- **Debug things** You can ignore them, if you just want to use IndY-Bot
 
 ---
 
