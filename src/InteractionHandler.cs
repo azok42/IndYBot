@@ -141,36 +141,43 @@ public class InteractionHandler
       if (result.IsSuccess)
          return;
 
+      string msg = "";
+
       switch (result.Error)
       {
          case InteractionCommandError.UnmetPrecondition:
-            await ctx.Interaction.RespondAsync(result.ErrorReason, ephemeral: true);
+            msg = result.ErrorReason;
             break;
 
          case InteractionCommandError.UnknownCommand:
-            await ctx.Interaction.RespondAsync("Unkown command?", ephemeral: true);
+            msg = "Unkown command?";
             break;
 
          case InteractionCommandError.BadArgs:
-            await ctx.Interaction.RespondAsync($"Invalid arguments given.", ephemeral: true);
+            msg = "Invalid arguments given.";
             break;
 
          case InteractionCommandError.ConvertFailed:
-            await ctx.Interaction.RespondAsync($"Invalid format for a parameter.", ephemeral: true);
+            msg = "Invalid format for a parameter.";
             break;
 
          case InteractionCommandError.ParseFailed:
-            await ctx.Interaction.RespondAsync($"Unable to parse command context.", ephemeral: true);
+            msg = "Unable to parse command context.";
             break;
 
          case InteractionCommandError.Exception:
-            await ctx.Interaction.RespondAsync($"Command had an internal error: {result.ErrorReason}", ephemeral: true);
+            msg = $"Command had an internal error: {result.ErrorReason}";
             break;
 
          default:
-            await ctx.Interaction.RespondAsync($"Command failed: {result.ErrorReason}", ephemeral: true);
+            msg = $"Command failed: {result.ErrorReason}";
             break;
       }
+      
+      if (ctx.Interaction.HasResponded)
+         await ctx.Interaction.FollowupAsync(msg, ephemeral: true);
+      else
+         await ctx.Interaction.RespondAsync(msg, ephemeral: true);
    }
 
    private async Task HandleNewGuild(SocketGuild guild)
