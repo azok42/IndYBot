@@ -167,6 +167,14 @@ public class InteractionHandler
 
          case InteractionCommandError.Exception:
             msg = $"Command had an internal error: {result.ErrorReason}";
+
+            if (result is ExecuteResult executeResult && executeResult.Exception != null)
+            {
+               Console.WriteLine("Exception");
+               Console.WriteLine(executeResult.Exception);
+               Console.WriteLine("StackTrace");
+               Console.WriteLine(executeResult.Exception.StackTrace);
+            }
             break;
 
          default:
