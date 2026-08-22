@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="709" height="555" src="./assets/IndYBotLogo.png">
+<img width="283" height="222" src="./assets/IndYBotLogo.png">
 
 # IndYBot
 [![badge](https://hackatime.hackclub.com/api/v1/badge/U091Q6Y0MM4/azok42/IndYBot)](https://hackatime.hackclub.com/@Azok) [![badge](https://shieldcn.dev/group/github/stars/azok42/IndYBot+github/forks/azok42/IndYBot+github/license/azok42/IndYBot.svg?variant=secondary&size=xs&theme=zinc)](https://hackatime.hackclub.com/@Azok) :(
@@ -165,7 +165,7 @@ For developers wanting to improve IndY-Bot:
 
 IndY is an education system in my school in Austria.
 
-<img width="540" height="550" src="./assets/IndyLogo.png">
+<img width="270" height="270" src="./assets/IndyLogo.png">
 
 ### Concept
 
