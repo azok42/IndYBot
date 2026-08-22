@@ -165,7 +165,9 @@ For developers wanting to improve IndY-Bot:
 
 IndY is an education system in my school in Austria.
 
-<img width="216" height="216" src="./assets/IndYLogo.png">
+<p align="center">
+    <img width="216" height="216" src="./assets/IndYLogo.png">
+</p>
 
 ### Concept
 
