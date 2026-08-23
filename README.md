@@ -173,7 +173,7 @@ IndY is an education system in my school in Austria.
 
 The first six hours on each day are shortened by 10 minutes. This time is being used on Monday, Wednesday and Friday in what is now the 3rd and 4th periods. For these hours students have to make entries, at least the day before the actual IndY-Day. If enough entries are missing, the student's behaviour mark is made worse.
 
-Teachers have a set schedule of where and when they have a IndY-Hour. Also teachers can host 'Special-IndY' hours. These are *special* hours where their normal schedule is being altered, for the duration of the Special-IndY. Examples are lectures not tied directly to school.
+Teachers have a set schedule of where and when they have an IndY-Hour. Also teachers can host 'Special-IndY' hours. These are *special* hours where their normal schedule is being altered, for the duration of the Special-IndY. Examples are lectures not tied directly to school.
 
 There are also other types of entries students can make:
 
