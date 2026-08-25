@@ -18,6 +18,8 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
 ## Features
 
+![IndYBot_Join](assets/IndYBot_Join.mov)
+
 ### Information
 
 Getters include, but are not limited to:
