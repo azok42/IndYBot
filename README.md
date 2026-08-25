@@ -36,6 +36,14 @@ Getters include, but are not limited to:
 
 ![IndYBot_Hours](assets/IndYBot_Hours.gif)
 
+### Login / Saving
+
+- Temporary login and logoff
+
+- Credential-saving for auto-login
+
+![IndYBot_Login](assets/IndYBot_Login.gif)
+
 ### Entry making
 
 - Manual, specific entries for each day
@@ -47,6 +55,8 @@ Getters include, but are not limited to:
 - Setting standards for quickly making entries
 
 - No need to specify the data when using the standard entry
+
+![IndYBot_Entry](assets/IndYBot_Entry.gif)
 
 ### Automatic Entries
 
