@@ -56,6 +56,8 @@ Getters include, but are not limited to:
 
 - No need to specify the data when using the standard entry
 
+![IndYBot_Entry](assets/IndYBot_Entry.gif)
+
 ### Automatic Entries
 
 - Entries will be made at specified times
