@@ -18,6 +18,8 @@ IndY-Bot is a Discord bot for interacting with the IndY-API used in my school.
 
 ## Features
 
+![IndYBot_Join](assets/IndYBot_Join.gif)
+
 ### Information
 
 Getters include, but are not limited to:
@@ -31,6 +33,8 @@ Getters include, but are not limited to:
 - Studentcount: get the current amount of students, which made entries for a specific teacher
 
 - ...
+
+![IndYBot_Hours](assets/IndYBot_Hours.gif)
 
 ### Entry making
 
