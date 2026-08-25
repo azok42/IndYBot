@@ -34,6 +34,8 @@ Getters include, but are not limited to:
 
 - ...
 
+![IndYBot_Hours](assets/IndYBot_Hours.gif)
+
 ### Entry making
 
 - Manual, specific entries for each day
