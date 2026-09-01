@@ -1,20 +1,20 @@
 using Discord;
 using Discord.WebSocket;
 using Discord.Interactions;
-using IndYBot.Helpers;
-using Dapper;
+
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace IndYBot;
+namespace IndYBot.Bot;
 
 public class InteractionHandler
 {
    private readonly DiscordSocketClient _client;
    private readonly InteractionService _handler;
    private readonly IServiceProvider _services;
-   private readonly SQLHelper _sqlHelper;
-   private readonly IConfigurationRoot _config;
+   private readonly IConfiguration _config;
+   private readonly ILogger<IndyBot> _logger;
 
    private static bool commandsRegistered = false;
    private static string disconnectMsg= "";
@@ -24,22 +24,20 @@ public class InteractionHandler
          DiscordSocketClient client, 
          InteractionService handler, 
          IServiceProvider services,
-         SQLHelper sqlHelper,
-         IConfigurationRoot config)
+         IConfiguration config,
+         ILogger<IndyBot> logger)
    {
       _client = client;
       _handler = handler;
       _services = services;
-      _sqlHelper = sqlHelper;
       _config = config;
+      _logger = logger;
    }
 
    public async Task InitAsync()
    {
       _client.Ready += ReadyAsync;
       _client.InteractionCreated += HandleInteractionAsync;
-      _client.JoinedGuild += HandleNewGuild;
-      _client.LeftGuild += HandleGuildLeft;
       _client.Disconnected += HandleDisconnect;
 
       _handler.InteractionExecuted += HandleInteractionExecutedAsync;
@@ -49,7 +47,7 @@ public class InteractionHandler
    {
       if (_config["Debug:Enabled"] == "true")
       {
-         Console.WriteLine("Running in DEBUG mode!");   
+         _logger.LogInformation("Running in DEBUG mode!");   
 
          var debugChannelIdString = _config["Debug:Channel"];
          if (debugChannelIdString == null)
@@ -63,7 +61,7 @@ public class InteractionHandler
 
       if (!string.IsNullOrEmpty(disconnectMsg))
       {
-         await LogToGuildsAsync(disconnectMsg);
+         _logger.LogCritical("Disconnected...");
          disconnectMsg = "";
       }
 
@@ -81,7 +79,7 @@ public class InteractionHandler
          ulong debugGuildId = UInt64.Parse(debugGuildIdString);
          var commands = await _handler.RegisterCommandsToGuildAsync(debugGuildId);
 
-         Console.WriteLine($"{commands.Count()} commands have been registered");
+         _logger.LogInformation($"{commands.Count()} commands have been registered");
 
       }
       else
@@ -90,32 +88,6 @@ public class InteractionHandler
       }
 
       commandsRegistered = true;
-   }
-
-   private async Task LogToGuildsAsync(string msg)
-   {
-      var con = _sqlHelper.CreateConnection();
-
-      var sql = "SELECT default_channel, log_channel, logs_enabled FROM guild;";
-      var guildLogSettings = await con.QueryAsync<(ulong Default, ulong Log, bool LogsEnabled)>(sql);
-
-      if (guildLogSettings == null)
-         return;
-      
-      foreach (var settings in guildLogSettings)
-      {
-         if (!settings.LogsEnabled)
-            continue;
-
-         var usedChannelId = settings.Log;
-
-         if (settings.Log == default)
-            usedChannelId = settings.Default;
-
-         var usedChannel = await _client.GetChannelAsync(usedChannelId) as IMessageChannel;
-
-         if (usedChannel != null)
-            await usedChannel.SendMessageAsync($"[LOG] Channel disconnected at {disconnectTime} and reconnected now! Message: {disconnectMsg}"); }
    }
 
    private async Task HandleInteractionAsync(SocketInteraction interaction)
@@ -171,24 +143,6 @@ public class InteractionHandler
             await ctx.Interaction.RespondAsync($"Command failed: {result.ErrorReason}", ephemeral: true);
             break;
       }
-   }
-
-   private async Task HandleNewGuild(SocketGuild guild)
-   {
-      var con = _sqlHelper.CreateConnection();
-
-      var sql = "INSERT INTO guild(id, name, default_channel) VALUES(@GuildId, @Name, @DefaultChannel);";
-      await con.QueryAsync(sql, new { GuildId = guild.Id, Name = guild.Name, DefaultChannel = guild.DefaultChannel.Id });
-
-      await guild.DefaultChannel.SendMessageAsync("Initialize the bot the for the very first time with '/admin init' or set specific configurations with '/admin channel'!");
-   }
-
-   private async Task HandleGuildLeft(SocketGuild guild)
-   {
-      var con = _sqlHelper.CreateConnection();
-
-      var sql = "DELETE FROM guild WHERE id = @GuildId;";
-      await con.QueryAsync(sql, new { GuildId = guild.Id });
    }
 
    private async Task HandleDisconnect(Exception e)
