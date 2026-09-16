@@ -6,6 +6,8 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+using IndYBot.Responses;
+
 namespace IndYBot.Bot;
 
 public class InteractionHandler(
@@ -108,31 +110,59 @@ public class InteractionHandler(
         switch (result.Error)
         {
             case InteractionCommandError.UnmetPrecondition:
-                await ctx.Interaction.RespondAsync(result.ErrorReason, ephemeral: true);
+                _logger.LogError("{Command}: Unmet precoondition: {Reason}", command.Name, result.ErrorReason);
+                await new ErrorResponse(
+                        result.ErrorReason,
+                        LogLevel.Error)
+                    .SendAsync(ctx);
                 break;
 
             case InteractionCommandError.UnknownCommand:
-                await ctx.Interaction.RespondAsync("Unkown command?", ephemeral: true);
+                _logger.LogError("{Command}: Unknown command", command.Name);
+                await new ErrorResponse(
+                        "Unkown command?",
+                        LogLevel.Error)
+                    .SendAsync(ctx);
                 break;
 
             case InteractionCommandError.BadArgs:
-                await ctx.Interaction.RespondAsync($"Invalid arguments given.", ephemeral: true);
+                _logger.LogError("{Command}: Bad args", command.Name);
+                await new ErrorResponse(
+                        "Invalid arguments given.",
+                        LogLevel.Error)
+                    .SendAsync(ctx);
                 break;
 
             case InteractionCommandError.ConvertFailed:
-                await ctx.Interaction.RespondAsync($"Invalid format for a parameter.", ephemeral: true);
+                _logger.LogError("{Command}: Convert failed", command.Name);
+                await new ErrorResponse(
+                        "Invalid format for a parameter.",
+                        LogLevel.Error)
+                    .SendAsync(ctx);
                 break;
 
             case InteractionCommandError.ParseFailed:
-                await ctx.Interaction.RespondAsync($"Unable to parse command context.", ephemeral: true);
+                _logger.LogError("{Command}: Parse failed", command.Name);
+                await new ErrorResponse(
+                        "Unable to parse command context.",
+                        LogLevel.Error)
+                    .SendAsync(ctx);
                 break;
 
             case InteractionCommandError.Exception:
-                await ctx.Interaction.RespondAsync($"Command had an internal error: {result.ErrorReason}", ephemeral: true);
+                _logger.LogError("{Command}: Exception", command.Name);
+                await new ErrorResponse(
+                        $"Command had an internal error: {result.ErrorReason}",
+                        LogLevel.Error)
+                    .SendAsync(ctx);
                 break;
 
             default:
-                await ctx.Interaction.RespondAsync($"Command failed: {result.ErrorReason}", ephemeral: true);
+                _logger.LogError("{Command}: Error", command.Name);
+                await new ErrorResponse(
+                        $"Command failed: {result.ErrorReason}",
+                        LogLevel.Error)
+                    .SendAsync(ctx);
                 break;
         }
     }
