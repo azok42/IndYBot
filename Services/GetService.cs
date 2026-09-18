@@ -37,4 +37,44 @@ public class GetService(ILogger<GetService> logger)
 
         return response;
     }
+
+    public async Task<IResponse> GetIndyDays(int month = -1)
+    {
+        List<IndyDay> indyDays;
+
+        DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+        DateOnly startDate;
+        DateOnly endDate;
+
+        if (month == -1)
+        {
+            startDate = today.AddDays(-10);
+            endDate = today.AddDays(20);
+        }
+        else
+        {
+            startDate = new DateOnly(today.Year, month, 1);
+            endDate = startDate.AddDays(DateTime.DaysInMonth(today.Year, month));
+        }
+
+        try
+        {
+            indyDays = await IndyClient.GetIndyDaysAsync(startDate, endDate);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error at getting IndY-Days: {Exception}", e.Message);
+
+            return new ErrorResponse(
+                    "Something went wrong!",
+                    LogLevel.Error);
+        }
+
+        var response = new ListResponse<IndyDay>(
+                indyDays,
+                day => $"- **{day.DayName}**: {day.Date}\n",
+                heading: "IndY-Days:\n");
+
+        return response;
+    }
 }
