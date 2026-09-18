@@ -5,10 +5,12 @@ using Discord.Interactions;
 using IndYLib.Extensions;
 
 using IndYBot.Bot;
+using IndYBot.Services;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace IndYBot;
 
@@ -66,6 +68,20 @@ public static class Program
         // Database
 
         // Services
+
+        var assembly = Assembly.GetExecutingAssembly();
+
+        foreach (var type in assembly.GetTypes())
+        {
+            var service = type.GetInterface("IBotService");
+
+            if (service == null)
+                continue;
+
+            services.AddSingleton(service, type);
+        }
+
+        services.AddSingleton<GetService>();
 
         // ...
     }
