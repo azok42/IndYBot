@@ -29,4 +29,14 @@ public class GetModule(GetService getService)
 
         await response.SendAsync(Context);
     }
+
+    [SlashCommand("hours", "Get all available IndY-Hours!")]
+    public async Task GetIndYHours()
+    {
+        await DeferAsync();
+
+        var response = await _getService.GetIndyHours();
+
+        await response.SendAsync(Context);
+    }
 }

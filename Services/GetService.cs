@@ -77,4 +77,29 @@ public class GetService(ILogger<GetService> logger)
 
         return response;
     }
+
+    public async Task<IResponse> GetIndyHours()
+    {
+        List<IndyHour> indyHours;
+
+        try
+        {
+            indyHours = await IndyClient.GetIndyHoursAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Error at getting IndY-Hours: {Exception}", e.Message);
+
+            return new ErrorResponse(
+                    "Something went wrong!",
+                    LogLevel.Error);
+        }
+
+        var response = new ListResponse<IndyHour>(
+                indyHours,
+                hour => $"- **{hour.TeacherId}**({hour.TeacherName}) in {hour.Room} on {hour.DayName} {hour.Hour}\n",
+                heading: "IndY-Hours:\n");
+
+        return response;
+    }
 }
