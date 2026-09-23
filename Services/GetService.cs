@@ -1,5 +1,6 @@
 using IndYBot.Responses;
 using IndYBot.Responses.Interfaces;
+using IndYBot.Components.Autocomplete;
 
 using IndYLib.Services;
 using IndYLib.Models;
@@ -78,7 +79,7 @@ public class GetService(ILogger<GetService> logger)
         return response;
     }
 
-    public async Task<IResponse> GetIndyHours()
+    public async Task<IResponse> GetIndyHours(string teacher = "", Day? day = null, Hour? hour = null)
     {
         List<IndyHour> indyHours;
 
@@ -94,6 +95,15 @@ public class GetService(ILogger<GetService> logger)
                     "Something went wrong!",
                     LogLevel.Error);
         }
+
+        if (!string.IsNullOrEmpty(teacher))
+            indyHours = [.. indyHours.Where(indyHour => indyHour.TeacherId.Equals(teacher))];
+
+        if (day != null)
+            indyHours = [.. indyHours.Where(indyHour => indyHour.DayName.Equals(day.ToString()))];
+
+        if (hour != null)
+            indyHours = [.. indyHours.Where(indyHour => indyHour.Hour == (int) hour)];
 
         var response = new ListResponse<IndyHour>(
                 indyHours,
